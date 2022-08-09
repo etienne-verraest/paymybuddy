@@ -1,6 +1,7 @@
 package com.paymybuddy.webapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.paymybuddy.webapp.model.User;
@@ -13,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class UserService {
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -65,6 +69,9 @@ public class UserService {
 			String firstName = userEntity.getFirstName();
 			String lastName = userEntity.getLastName();
 			String userMail = userEntity.getMail();
+			String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
+			userEntity.setPassword(encodedPassword);
+
 			userRepository.save(userEntity);
 
 			log.info(

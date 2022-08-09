@@ -14,7 +14,7 @@ import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.service.UserService;
 
 @Controller
-public class UserController {
+public class SignUpController {
 
 	@Autowired
 	UserService userService;

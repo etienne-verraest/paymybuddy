@@ -20,8 +20,8 @@ public class UserService {
 	/**
 	 * This method finds a user by its Id
 	 *
-	 * @param id			Integer : Id
-	 * @return				A User Object if found, otherwise returns null
+	 * @param id				Integer : Id
+	 * @return					A User Object if found, otherwise returns null
 	 */
 	public User findUserById(Integer id) {
 		User user = userRepository.findUserById(id);
@@ -36,8 +36,8 @@ public class UserService {
 	/**
 	 * This method finds a user by its email address
 	 *
-	 * @param mail			String : Mail address
-	 * @return				A User Object if found, otherwise returns null
+	 * @param mail				String : Mail address
+	 * @return					A User Object if found, otherwise returns null
 	 */
 	public User findUserByMail(String mail) {
 		User user = userRepository.findUserByMail(mail);
@@ -47,5 +47,25 @@ public class UserService {
 		}
 		log.info("[User service] No user has been found with mail address : {}", mail);
 		return null;
+	}
+
+	/**
+	 * This method creates a user and persist it in the database
+	 *
+	 * @param userEntity		A User Object to add
+	 */
+	public void createUser(User userEntity) {
+
+		if (userEntity != null) {
+			String firstName = userEntity.getFirstName();
+			String lastName = userEntity.getLastName();
+			String userMail = userEntity.getMail();
+			userRepository.save(userEntity);
+
+			log.info(
+					"[User service] Created a new user with the following information : Mail={} firstName={} lastName={}",
+					userMail, firstName, lastName);
+
+		}
 	}
 }

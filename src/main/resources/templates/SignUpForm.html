@@ -5,29 +5,40 @@
 </head>
 <body>
 
-	<form method="post" th:action="@{/signup}" th:object="${User}">  
+	<form method="post" th:action="@{/signup}" th:object="${userDto}">  
 	  <div>
 	    <label for="first_name">First name : </label>
 	    <input th:field="*{firstName}" type="text" id="first_name">
+	    <span th:errors="*{firstName}">First name error</span>
 	  </div>
 	  
 	  <div>
 	    <label for="last_name">Last name : </label>
 	    <input th:field="*{lastName}" type="text" id="last_name">
+	    <span th:errors="*{lastName}">Last name error</span>
 	  </div>
 	 
 	  <div>
 	    <label for="email">Mail: </label>
 	    <input th:field="*{mail}" type="email" id="mail">
+	    <span th:errors="*{mail}">Email error</span>
 	  </div>
 	  
 	  <div>
-	    <label for="first_password">Password : </label>
-	    <input th:field="*{password}" type="password" id="first_password">
+	    <label for="password">Password : </label>
+	    <input th:field="*{password}" type="password" id="password">
+	    <span th:errors="*{password}">Password error</span>
+	  </div>
+	  
+	  <div>
+	    <label for="password_confirmation">Password confirmation : </label>
+	    <input th:field="*{passwordConfirmation}" type="password" id="password_confirmation">
+	    <span th:errors="*{passwordConfirmation}">Password Confirmation error</span>
 	  </div>
 	  	  
 	  <div>
 	    <input type="submit" value="Sign Up">
+	    <span th:errors="*{global}">Mail address is already registered</span>
 	  </div>
 	</form>
 </body>

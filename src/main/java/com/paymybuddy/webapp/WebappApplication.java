@@ -5,7 +5,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.service.UserService;
 
 @SpringBootApplication
@@ -20,8 +19,7 @@ public class WebappApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		// CommandLineRunner
-		User user = userService.findUserById(2);
+
 	}
 
 }

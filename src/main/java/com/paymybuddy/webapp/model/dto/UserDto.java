@@ -1,3 +1,17 @@
+/**
+ * UserDto class is a class used for the registration form.
+ *
+ * There are 2 class-level customs annotations that have been added :
+ * - @EmailNotRegistered : check if the email specified is already in database or not
+ * - @PasswordsMatch : check if the two inputs are equals
+ *
+ * Fields level annotation are there to ensure that no field is left empty.
+ *
+ * When validation is complete and information correctly filled this class
+ * is mapped to a User entity, which will be saved in database.
+ *
+ */
+
 package com.paymybuddy.webapp.model.dto;
 
 import javax.validation.constraints.NotEmpty;

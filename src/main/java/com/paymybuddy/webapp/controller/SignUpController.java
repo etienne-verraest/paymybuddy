@@ -21,6 +21,7 @@ import com.paymybuddy.webapp.service.UserService;
 @Controller
 public class SignUpController {
 
+	// The name of the html file that will be used by this controller
 	private static final String SIGN_UP_VIEW_NAME = "SignUpForm";
 
 	@Autowired
@@ -30,18 +31,18 @@ public class SignUpController {
 	private ModelMapper modelMapper;
 
 	/**
-	 * This GET request show the SignUpForm for the client
+	 * This GET request show the Sign-up Form for the client
 	 *
 	 *
-	 * @return 						Generate SignUpForm.html
+	 * @return 							Generate SignUpForm.html
 	 */
 	@GetMapping("/signup")
 	public ModelAndView showSignUpForm() {
 
-		// Name of the .html file
 		String viewName = SIGN_UP_VIEW_NAME;
 
-		// User will be used as a command object to correctly populate the fields
+		// userDto will be used as a command object to correctly populate the fields and
+		// check for validations
 		Map<String, Object> model = new HashMap<>();
 		model.put("userDto", new UserDto());
 
@@ -52,12 +53,13 @@ public class SignUpController {
 	/**
 	 * This POST request creates an user in database if every field are correctly filled
 	 *
-	 * @param user					The User Object that will be created
-	 * @return						Redirect the user to the homepage
+	 * @param userDto					The userDto object that is populated from the form
+	 * @return							Redirect the user to the home page or to the form if there are errors
 	 */
 	@PostMapping("/signup")
 	public ModelAndView submitSignUpForm(@Valid UserDto userDto, BindingResult bindingResult) {
 
+		// If there is a problem with one or multiple fields
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(SIGN_UP_VIEW_NAME);
 		}
@@ -66,7 +68,7 @@ public class SignUpController {
 		User user = modelMapper.map(userDto, User.class);
 		userService.createUser(user);
 
-		// Redirect the user to the homepage
+		// Redirect the user to the home page if everything's good
 		RedirectView redirect = new RedirectView();
 		redirect.setUrl("/");
 

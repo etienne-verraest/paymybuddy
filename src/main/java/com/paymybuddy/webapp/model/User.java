@@ -8,10 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user")
 @Data
+@NoArgsConstructor
 public class User {
 
 	public User(String mail, String password, String firstName, String lastName) {

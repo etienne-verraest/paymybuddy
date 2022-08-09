@@ -9,4 +9,6 @@ import com.paymybuddy.webapp.model.User;
 public interface UserRepository extends CrudRepository<User, Integer> {
 
 	User findUserById(Integer id);
+
+	User findUserByMail(String mail);
 }

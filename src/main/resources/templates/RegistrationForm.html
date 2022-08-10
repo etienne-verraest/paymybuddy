@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="ISO-8859-1">
-	<title>PayMyBuddy - Sign-up form</title>
+	<title>PayMyBuddy - Register</title>
 </head>
 <body>
 
@@ -40,6 +40,8 @@
 	    <input type="submit" value="Sign Up">
 	    <span th:errors="*{global}">Mail address is already registered</span>
 	  </div>
+	  
+	  <span><a href="/login">Already have an account ?</a></span>
 	</form>
 </body>
 </html>

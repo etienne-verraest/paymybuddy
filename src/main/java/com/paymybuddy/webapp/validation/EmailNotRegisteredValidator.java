@@ -5,17 +5,17 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.paymybuddy.webapp.model.dto.UserDto;
+import com.paymybuddy.webapp.model.dto.UserRegistrationDto;
 import com.paymybuddy.webapp.service.UserService;
 
-public class EmailNotRegisteredValidator implements ConstraintValidator<EmailNotRegistered, UserDto> {
+public class EmailNotRegisteredValidator implements ConstraintValidator<EmailNotRegistered, UserRegistrationDto> {
 
 	@Autowired
 	UserService userService;
 
 	@Override
-	public boolean isValid(UserDto userDto, ConstraintValidatorContext context) {
-		return userService.findUserByMail(userDto.getMail()) == null;
+	public boolean isValid(UserRegistrationDto userRegistrationDto, ConstraintValidatorContext context) {
+		return userService.findUserByMail(userRegistrationDto.getMail()) == null;
 	}
 
 }

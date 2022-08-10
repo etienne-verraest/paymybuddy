@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>PayMyBuddy - Login</title>
+</head>
+<body>
+
+	<form method="post" th:action="@{/login}" th:object="${userLoginDto}">  
+	  <div>
+	    <label for="email">Mail: </label>
+	    <input th:field="*{mail}" type="email" id="mail">
+	    <span th:errors="*{mail}">Email error</span>
+	  </div>
+	  
+	  <div>
+	    <label for="password">Password : </label>
+	    <input th:field="*{password}" type="password" id="password">
+	    <span th:errors="*{password}">Password error</span>
+	  </div>
+	  	  
+	  <div>
+	    <input type="submit" value="Login">
+	    <span th:errors="*{global}">Mail address is already registered</span>
+	  </div>
+	  
+	  <span><a href="/register">Register here</a></span>
+	</form>
+</body>
+</html>

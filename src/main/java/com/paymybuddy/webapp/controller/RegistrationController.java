@@ -15,14 +15,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.model.User;
-import com.paymybuddy.webapp.model.dto.UserDto;
+import com.paymybuddy.webapp.model.dto.UserRegistrationDto;
 import com.paymybuddy.webapp.service.UserService;
 
 @Controller
-public class SignUpController {
+public class RegistrationController {
 
 	// The name of the html file that will be used by this controller
-	private static final String SIGN_UP_VIEW_NAME = "SignUpForm";
+	private static final String REGISTRATION_VIEW_NAME = "RegistrationForm";
 
 	@Autowired
 	private UserService userService;
@@ -31,20 +31,20 @@ public class SignUpController {
 	private ModelMapper modelMapper;
 
 	/**
-	 * This GET request show the Sign-up Form for the client
+	 * This GET request show the Registration Form for the client
 	 *
 	 *
-	 * @return 							Generate SignUpForm.html
+	 * @return 							Generate RegistrationForm.html
 	 */
-	@GetMapping("/signup")
-	public ModelAndView showSignUpForm() {
+	@GetMapping("/register")
+	public ModelAndView showRegistrationForm() {
 
-		String viewName = SIGN_UP_VIEW_NAME;
+		String viewName = REGISTRATION_VIEW_NAME;
 
-		// userDto will be used as a command object to correctly populate the fields and
-		// check for validations
+		// userRegistrationDto will be used as a command object to correctly populate
+		// the fields and check for validations
 		Map<String, Object> model = new HashMap<>();
-		model.put("userDto", new UserDto());
+		model.put("userRegistrationDto", new UserRegistrationDto());
 
 		return new ModelAndView(viewName, model);
 
@@ -53,19 +53,20 @@ public class SignUpController {
 	/**
 	 * This POST request creates an user in database if every field are correctly filled
 	 *
-	 * @param userDto					The userDto object that is populated from the form
-	 * @return							Redirect the user to the home page or to the form if there are errors
+	 * @param userRegistrationDto			The userRegistrationDto object that is populated from the form
+	 * @return								Redirect the user to the home page or to the form if there are errors
 	 */
-	@PostMapping("/signup")
-	public ModelAndView submitSignUpForm(@Valid UserDto userDto, BindingResult bindingResult) {
+	@PostMapping("/register")
+	public ModelAndView submitRegistrationForm(@Valid UserRegistrationDto userRegistrationDto,
+			BindingResult bindingResult) {
 
 		// If there is a problem with one or multiple fields
 		if (bindingResult.hasErrors()) {
-			return new ModelAndView(SIGN_UP_VIEW_NAME);
+			return new ModelAndView(REGISTRATION_VIEW_NAME);
 		}
 
 		// Creating the user if every fields from UserDto have been validated
-		User user = modelMapper.map(userDto, User.class);
+		User user = modelMapper.map(userRegistrationDto, User.class);
 		userService.createUser(user);
 
 		// Redirect the user to the home page if everything's good

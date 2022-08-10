@@ -3,13 +3,13 @@ package com.paymybuddy.webapp.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.paymybuddy.webapp.model.dto.UserDto;
+import com.paymybuddy.webapp.model.dto.UserRegistrationDto;
 
-public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMatch, UserDto> {
+public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMatch, UserRegistrationDto> {
 
 	@Override
-	public boolean isValid(UserDto userDto, ConstraintValidatorContext context) {
-		return userDto.getPassword().equals(userDto.getPasswordConfirmation());
+	public boolean isValid(UserRegistrationDto userRegistrationDto, ConstraintValidatorContext context) {
+		return userRegistrationDto.getPassword().equals(userRegistrationDto.getPasswordConfirmation());
 	}
 
 }

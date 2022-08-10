@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EmailNotRegistered
 @PasswordsMatch
-public class UserDto {
+public class UserRegistrationDto {
 
 	@NotEmpty(message = "Email address must not be empty")
 	private String mail;

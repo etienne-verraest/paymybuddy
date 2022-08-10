@@ -5,7 +5,7 @@
 </head>
 <body>
 
-	<form method="post" th:action="@{/signup}" th:object="${userDto}">  
+	<form method="post" th:action="@{/register}" th:object="${userRegistrationDto}">  
 	  <div>
 	    <label for="first_name">First name : </label>
 	    <input th:field="*{firstName}" type="text" id="first_name">

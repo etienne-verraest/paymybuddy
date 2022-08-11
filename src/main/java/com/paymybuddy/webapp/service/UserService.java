@@ -1,6 +1,11 @@
 package com.paymybuddy.webapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
 
 	/**
 	 * This method finds a user by its Id
@@ -65,8 +67,9 @@ public class UserService {
 			String lastName = userEntity.getLastName();
 			String userMail = userEntity.getMail();
 
-			// For security reasons, we are encoding the password with a BCrypt Hash.
-			String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
+			// For security reasons, we are encoding the password with a BCrypt Hash, we
+			// don't use the configured bean to avoid circular references
+			String encodedPassword = new BCryptPasswordEncoder().encode(userEntity.getPassword());
 			userEntity.setPassword(encodedPassword);
 
 			userRepository.save(userEntity);
@@ -76,5 +79,38 @@ public class UserService {
 					userMail, firstName, lastName);
 
 		}
+	}
+
+	/**
+	 * This method comes from the implementation of UserDetailsService
+	 * It is used to load the user from the database using his mail address
+	 *
+	 * If the address is not found in the database, it throws an UsernameNotFoundException
+	 */
+	@Override
+	public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
+		User user = userRepository.findUserByMail(mail);
+		if (user != null) {
+			return new User(user);
+		}
+		throw new UsernameNotFoundException("User not found :" + mail);
+	}
+
+	/**
+	 * This method returns the mail address of the logged user for the current session
+	 *
+	 *
+	 * @return					String : the mail address
+	 */
+	public String getEmailOfLoggedUser() {
+		String mail = null;
+		SecurityContext context = SecurityContextHolder.getContext();
+		Object principal = context.getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			mail = ((UserDetails) principal).getUsername();
+		} else {
+			mail = principal.toString();
+		}
+		return mail;
 	}
 }

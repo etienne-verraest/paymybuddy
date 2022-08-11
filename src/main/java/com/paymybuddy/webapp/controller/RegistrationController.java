@@ -21,7 +21,6 @@ import com.paymybuddy.webapp.service.UserService;
 @Controller
 public class RegistrationController {
 
-	// The name of the html file that will be used by this controller
 	private static final String REGISTRATION_VIEW_NAME = "RegistrationForm";
 
 	@Autowired
@@ -71,7 +70,7 @@ public class RegistrationController {
 
 		// Redirect the user to the home page if everything's good
 		RedirectView redirect = new RedirectView();
-		redirect.setUrl("/");
+		redirect.setUrl("/login");
 
 		return new ModelAndView(redirect);
 	}

@@ -70,7 +70,7 @@ public class RegistrationController {
 
 		// Redirect the user to the home page if everything's good
 		RedirectView redirect = new RedirectView();
-		redirect.setUrl("/login");
+		redirect.setUrl("/login?registered");
 
 		return new ModelAndView(redirect);
 	}

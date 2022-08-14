@@ -100,7 +100,7 @@ public class UserService implements UserDetailsService {
 	 * This method returns the mail address of the logged user for the current session
 	 *
 	 *
-	 * @return					String : the mail address
+	 * @return						String : the mail address
 	 */
 	public String getEmailOfLoggedUser() {
 		String mail = null;

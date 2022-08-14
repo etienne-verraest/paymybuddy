@@ -23,7 +23,9 @@
 	    <span th:errors="*{global}">Mail address is not registered</span>
 	  </div>
 	  
-	  <span><a href="/register">Register here</a></span>
+	  <span><a href="/register">Register here</a></span><br>
+	  <span style="color:Tomato;" th:if="${param.error}">Invalid Credentials</span>
+	  <span style="color:MediumSeaGreen;" th:if="${param.logout}">You have been logged out</span>
 	</form>
 </body>
 </html>

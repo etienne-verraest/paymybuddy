@@ -33,13 +33,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests() //
+				.antMatchers("/css/**").permitAll() // Allow CSS to be loaded
 				.antMatchers("/user").hasRole("USER") // Only allow logged user for this page
 				.antMatchers("/login", "/register").permitAll() // Permit anonymous users to access these pages
 				.anyRequest().authenticated() // Every others pages must be accessed with valid credentials
-				.and().formLogin().loginPage("/login").defaultSuccessUrl("/user", true) // Login form parameters
+				.and() //
+				.formLogin().loginPage("/login").defaultSuccessUrl("/user", true) // Login form parameters
 				.usernameParameter("mail") //
-				.and().logout().logoutUrl("/logout").invalidateHttpSession(true).deleteCookies("JSESSIONID") // Logout
-																												// parameters
+				.and() //
+				.logout().logoutUrl("/logout").invalidateHttpSession(true) // Logout parameters
+				.deleteCookies("JSESSIONID") // Delete cookies on logout
 				.and().csrf().disable(); // Disabling CSRF Tokens
 	}
 }

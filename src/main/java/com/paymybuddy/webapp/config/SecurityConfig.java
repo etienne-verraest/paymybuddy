@@ -26,20 +26,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// Defining the passwordEncoder here, to avoid plain-text manpulations
+		// Defining the passwordEncoder here, to avoid plain-text manipulations
 		auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests() //
-				.antMatchers("/css/**").permitAll() // Allow CSS to be loaded
-				.antMatchers("/user").hasRole("USER") // Only allow logged user for this page
+				.antMatchers("/css/**").permitAll() // Allow CSS to be loaded by everyone
+				.antMatchers("/user").hasRole("USER") // Only allow user with role "USER" for this page
 				.antMatchers("/login", "/register").permitAll() // Permit anonymous users to access these pages
 				.anyRequest().authenticated() // Every others pages must be accessed with valid credentials
 				.and() //
 				.formLogin().loginPage("/login").defaultSuccessUrl("/user", true) // Login form parameters
 				.usernameParameter("mail") //
+				.and() // Remember me parameters
+				.rememberMe().userDetailsService(userService).tokenValiditySeconds(7 * 24 * 60 * 60) // 7 days token
+				.rememberMeCookieName("REMEMBERSESSION") // Set a cookie name
 				.and() //
 				.logout().logoutUrl("/logout").invalidateHttpSession(true) // Logout parameters
 				.deleteCookies("JSESSIONID") // Delete cookies on logout

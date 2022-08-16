@@ -93,7 +93,7 @@ public class UserService implements UserDetailsService {
 		if (user != null) {
 			return new User(user);
 		}
-		throw new UsernameNotFoundException("User not found :" + mail);
+		throw new UsernameNotFoundException("User not found : " + mail);
 	}
 
 	/**

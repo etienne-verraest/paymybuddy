@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.rememberMeCookieName("REMEMBERSESSION") // Set a cookie name
 				.and() //
 				.logout().logoutUrl("/logout").invalidateHttpSession(true) // Logout parameters
-				.deleteCookies("JSESSIONID") // Delete cookies on logout
+				.deleteCookies("JSESSIONID", "REMEMBERSESSION") // Delete cookies on logout
 				.and().csrf().disable(); // Disabling CSRF Tokens
 	}
 }

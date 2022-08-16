@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.paymybuddy.webapp.config.constants.ViewNameConstants;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.UserRegistrationDto;
 import com.paymybuddy.webapp.service.UserService;
@@ -21,7 +22,7 @@ import com.paymybuddy.webapp.service.UserService;
 @Controller
 public class RegistrationController {
 
-	private static final String REGISTRATION_VIEW_NAME = "RegistrationForm";
+	private static String viewName = ViewNameConstants.REGISTRATION_VIEW_NAME;
 
 	@Autowired
 	private UserService userService;
@@ -37,8 +38,6 @@ public class RegistrationController {
 	 */
 	@GetMapping("/register")
 	public ModelAndView showRegistrationForm() {
-
-		String viewName = REGISTRATION_VIEW_NAME;
 
 		// userRegistrationDto will be used as a command object to correctly populate
 		// the fields and check for validations
@@ -61,7 +60,7 @@ public class RegistrationController {
 
 		// If there is a problem with one or multiple fields
 		if (bindingResult.hasErrors()) {
-			return new ModelAndView(REGISTRATION_VIEW_NAME);
+			return new ModelAndView(viewName);
 		}
 
 		// Creating the user if every fields from UserDto have been validated

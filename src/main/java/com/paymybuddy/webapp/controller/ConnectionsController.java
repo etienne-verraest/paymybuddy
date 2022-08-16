@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.paymybuddy.webapp.config.constants.ViewNameConstants;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.ConnectionAddDto;
 import com.paymybuddy.webapp.service.ConnectionService;
@@ -23,13 +24,13 @@ import com.paymybuddy.webapp.service.UserService;
 @Controller
 public class ConnectionsController {
 
+	private static String viewName = ViewNameConstants.CONNECTIONS_VIEW_NAME;
+
 	@Autowired
 	private UserService userService;
 
 	@Autowired
 	private ConnectionService connectionService;
-
-	private static final String CONNECTIONS_VIEW_NAME = "connections";
 
 	@GetMapping("/connections")
 	public ModelAndView showConnectionsPage() {
@@ -51,7 +52,7 @@ public class ConnectionsController {
 		model.put("connectionsList", connections); // Show user's connections
 		model.put("connectionAddDto", new ConnectionAddDto()); // DTO used as a Data Object for the adding form
 
-		return new ModelAndView(CONNECTIONS_VIEW_NAME, model);
+		return new ModelAndView(viewName, model);
 
 	}
 
@@ -60,7 +61,7 @@ public class ConnectionsController {
 
 		// If connectionAddDto has validation errors
 		if (bindingResult.hasErrors()) {
-			return new ModelAndView(CONNECTIONS_VIEW_NAME);
+			return new ModelAndView(viewName);
 		}
 
 		// Get current logged user

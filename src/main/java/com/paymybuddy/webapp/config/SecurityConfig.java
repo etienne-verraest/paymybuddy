@@ -34,11 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests() //
 				.antMatchers("/css/**").permitAll() // Allow CSS to be loaded by everyone
-				.antMatchers("/user").hasRole("USER") // Only allow user with role "USER" for this page
 				.antMatchers("/login", "/register").permitAll() // Permit anonymous users to access these pages
 				.anyRequest().authenticated() // Every others pages must be accessed with valid credentials
 				.and() //
-				.formLogin().loginPage("/login").defaultSuccessUrl("/user", true) // Login form parameters
+				.formLogin().loginPage("/login").defaultSuccessUrl("/", true) // Login form parameters
 				.usernameParameter("mail") //
 				.and() // Remember me parameters
 				.rememberMe().userDetailsService(userService).tokenValiditySeconds(7 * 24 * 60 * 60) // 7 days token

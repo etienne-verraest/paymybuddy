@@ -38,8 +38,8 @@ public class UserService implements UserDetailsService {
 	/**
 	 * This method finds a user by its email address
 	 *
-	 * @param mail				String : Mail address
-	 * @return					A User Object if found, otherwise returns null
+	 * @param mail					String : Mail address
+	 * @return						A User Object if found, otherwise returns null
 	 */
 	public User findUserByMail(String mail) {
 		User user = userRepository.findUserByMail(mail);
@@ -47,6 +47,16 @@ public class UserService implements UserDetailsService {
 			return user;
 		}
 		return null;
+	}
+
+	/**
+	 * This method returns true if a address mail exists in database
+	 *
+	 * @param mail					String : Mail address
+	 * @return						A boolean to true
+	 */
+	public boolean isAnExistingMail(String mail) {
+		return userRepository.findUserByMail(mail) != null;
 	}
 
 	/**

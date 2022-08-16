@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>PayMyBuddy - Connections</title>
+	</head>
+	
+	<body>
+		<form method="post" th:action="@{/connections}" th:object="${connectionAddDto}">
+		  <div>
+		    <label for="buddyMmail">Add a buddy : </label>
+		    <input th:field="*{buddyMail}" type="text" name="buddyMail" id="buddyMail">
+		    <small th:errors="*{buddyMail}" class="text-danger">Mail address must not be empty</small>
+		  </div>
+		  <div>
+		    <input type="submit" value="Add">
+		  </div>
+		</form>
+		
+		<table>
+		    <thead>
+		        <tr>
+		            <th colspan="2">My connections</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <tr th:each="connection : ${connectionsList}">
+		            <td th:text="|${connection.firstName} ${connection.lastName}|">First Name and Last Name</td>
+		            <td>Send Money</td>
+		            <td>Unfriend</td>
+		        </tr>
+		    </tbody>
+		</table>
+	</body>
+</html>

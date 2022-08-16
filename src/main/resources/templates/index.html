@@ -1,0 +1,13 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>PayMyBuddy - Homepage</title>
+	</head>
+
+	<body>
+		<span th:text="'Hello ' + ${firstName} + ' ' + ${lastName} + '!'">Hello [firstName] [lastName]</span><br/><br/>
+		<a href="/connections"> Add a buddy </a><br>
+		<a href="/logout"> Log out </a>	
+	</body>
+</html>

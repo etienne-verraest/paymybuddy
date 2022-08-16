@@ -2,12 +2,15 @@ package com.paymybuddy.webapp.model;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -63,6 +66,9 @@ public class User implements UserDetails {
 
 	@Column
 	private Double balance = 0.0;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userId")
+	private List<Connection> connections;
 
 	/**
 	 * Spring Security login related methods

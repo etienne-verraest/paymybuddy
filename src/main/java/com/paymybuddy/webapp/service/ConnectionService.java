@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.paymybuddy.webapp.exception.EmailNotFoundException;
+import com.paymybuddy.webapp.exception.IsAlreadyAConnectionException;
+import com.paymybuddy.webapp.exception.UserAddsHimselfException;
 import com.paymybuddy.webapp.model.Connection;
 import com.paymybuddy.webapp.repository.ConnectionRepository;
 
@@ -26,33 +29,52 @@ public class ConnectionService {
 	 *
 	 * @param userId						The Id of the user that wants to add a buddy
 	 * @param buddyMail						The mail of the buddy that the user wants to add
-	 * @return boolean						True if the connections is successful, false otherwise
+	 * @return boolean						True if the connection is successful, an error is thrown otherwise
+	 * @throws Exception						- EmailNotFoundException : The entered email is incorrect
+	 * 											- IsAlreadyAConnectionException : The user we want to add is already a buddy
+	 * 											- UserAddsHimselfException : The user wants to make connection with himself
 	 */
-	public boolean makeConnections(Integer userId, String buddyMail) {
+	public boolean makeConnections(Integer userId, String buddyMail) throws Exception {
 		// Check if the entered email exists in database
 		if (userService.isAnExistingMail(buddyMail)) {
 			Integer buddyId = userService.findUserByMail(buddyMail).getId();
 
-			// Check if the connections has not been made
-			if (!getUserBuddiesId(userId).contains(buddyId)) {
-				Connection connection = new Connection(userId, buddyId);
-				connectionRepository.save(connection);
-				log.info("User {} added {} to his connections", userId, buddyMail);
-				return true;
+			// Insure that user can't add themselves
+			if (!userId.equals(buddyId)) {
+
+				// Check if the connections has not been made
+				if (!getUserBuddiesId(userId).contains(buddyId)) {
+					Connection connection = new Connection(userId, buddyId);
+					connectionRepository.save(connection);
+					log.info("[Connection Service] User {} added {} to his connections", userId, buddyMail);
+					return true;
+				}
+
+				throw new IsAlreadyAConnectionException("You are already connected with this user");
 			}
-			log.info("User {} has already a connection with user {}", userId, buddyMail);
-			return false;
+
+			throw new UserAddsHimselfException("You can't add yourself");
 		}
-		log.info("{} is not an existing email address", buddyMail);
-		return false;
+
+		throw new EmailNotFoundException("There is no users linked to this mail address");
 	}
 
+	/**
+	 * This method is used to remove a connection between two users
+	 *
+	 * @param userId						The Id of the user that wants to remove the buddy
+	 * @param buddyId						The Id of the buddy that the user wants to remove
+	 * @return								True if the deletion has been made
+	 */
 	public boolean removeConnections(Integer userId, Integer buddyId) {
+
+		// Check if the connection is made
 		if (getUserBuddiesId(userId).contains(buddyId)) {
 			connectionRepository.deleteBuddyFromId(userId, buddyId);
-			log.info("Removed connection between {} and {}", userId, buddyId);
+			log.info("[Connection Service] User {} removed his connection with {}", userId, buddyId);
 			return true;
 		}
+
 		return false;
 	}
 

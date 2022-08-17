@@ -16,9 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
-import com.paymybuddy.webapp.exception.EmailNotFoundException;
-import com.paymybuddy.webapp.exception.IsAlreadyAConnectionException;
-import com.paymybuddy.webapp.exception.UserAddsHimselfException;
+import com.paymybuddy.webapp.exception.ConnectionAdditionException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.ConnectionAddDto;
 import com.paymybuddy.webapp.service.ConnectionService;
@@ -116,7 +114,7 @@ public class ConnectionsController {
 				redirect.setUrl(viewName + "?success");
 				return new ModelAndView(redirect, model);
 			}
-		} catch (EmailNotFoundException | IsAlreadyAConnectionException | UserAddsHimselfException error) {
+		} catch (ConnectionAdditionException error) {
 			bindingResult.rejectValue("buddyMail", "", error.getMessage());
 			return new ModelAndView(viewName, model);
 		}

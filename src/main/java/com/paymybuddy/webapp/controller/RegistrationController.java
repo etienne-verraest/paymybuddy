@@ -34,7 +34,7 @@ public class RegistrationController {
 	 * This GET request show the registration form for the client
 	 *
 	 *
-	 * @return 							Generate register.html
+	 * @return 									Generate register.html
 	 */
 	@GetMapping("/register")
 	public ModelAndView showRegistrationForm() {
@@ -51,14 +51,13 @@ public class RegistrationController {
 	/**
 	 * This POST request creates an user in database if every field are correctly filled
 	 *
-	 * @param userRegistrationDto			The userRegistrationDto object that is populated from the form
-	 * @return								Redirect the user to the home page or to the form if there are errors
+	 * @param userRegistrationDto				The userRegistrationDto object that is populated from the form
+	 * @return									Redirect the user to the home page or to the form if there are errors
 	 */
 	@PostMapping("/register")
 	public ModelAndView submitRegistrationForm(@Valid UserRegistrationDto userRegistrationDto,
 			BindingResult bindingResult) {
 
-		// If there is a problem with one or multiple fields
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(viewName);
 		}
@@ -67,10 +66,8 @@ public class RegistrationController {
 		User user = modelMapper.map(userRegistrationDto, User.class);
 		userService.createUser(user);
 
-		// Redirect the user to the home page if everything's good
 		RedirectView redirect = new RedirectView();
-		redirect.setUrl("/login?registered");
-
+		redirect.setUrl(viewName + "?registered");
 		return new ModelAndView(redirect);
 	}
 

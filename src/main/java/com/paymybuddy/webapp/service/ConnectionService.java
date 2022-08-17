@@ -25,14 +25,14 @@ public class ConnectionService {
 	/**
 	 * This method is used to make a connection with another user
 	 *
-	 * @param userId						The Id of the user that wants to add a buddy
-	 * @param buddyMail						The mail of the buddy that the user wants to add
-	 * @return boolean						True if the connection is successful, an error is thrown otherwise
-	 * @throws Exception						- EmailNotFoundException : The entered email is incorrect
-	 * 											- IsAlreadyAConnectionException : The user we want to add is already a buddy
-	 * 											- UserAddsHimselfException : The user wants to make connection with himself
+	 * @param userId							The Id of the user that wants to add a buddy
+	 * @param buddyMail							The mail of the buddy that the user wants to add
+	 * @return boolean							True if the connection is successful, an error is thrown otherwise
+	 * @throws ConnectionAdditionException		- The entered email is incorrect
+	 * 											- The user wants to add someone who is already a buddy
+	 * 											- The user wants to make connection with himself
 	 */
-	public boolean makeConnections(Integer userId, String buddyMail) throws Exception {
+	public boolean makeConnections(Integer userId, String buddyMail) throws ConnectionAdditionException {
 		// Check if the entered email exists in database
 		if (userService.isAnExistingMail(buddyMail)) {
 			Integer buddyId = userService.findUserByMail(buddyMail).getId();
@@ -60,9 +60,9 @@ public class ConnectionService {
 	/**
 	 * This method is used to remove a connection between two users
 	 *
-	 * @param userId						The Id of the user that wants to remove the buddy
-	 * @param buddyId						The Id of the buddy that the user wants to remove
-	 * @return								True if the deletion has been made
+	 * @param userId							The Id of the user that wants to remove the buddy
+	 * @param buddyId							The Id of the buddy that the user wants to remove
+	 * @return									True if the deletion has been made
 	 */
 	public boolean removeConnections(Integer userId, Integer buddyId) {
 

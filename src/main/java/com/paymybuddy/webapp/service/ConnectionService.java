@@ -47,6 +47,15 @@ public class ConnectionService {
 		return false;
 	}
 
+	public boolean removeConnections(Integer userId, Integer buddyId) {
+		if (getUserBuddiesId(userId).contains(buddyId)) {
+			connectionRepository.deleteBuddyFromId(userId, buddyId);
+			log.info("Removed connection between {} and {}", userId, buddyId);
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * This method gets the id of connections made by the user
 	 *

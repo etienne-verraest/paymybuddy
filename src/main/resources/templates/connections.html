@@ -28,7 +28,7 @@
 		        <tr th:each="connection : ${connectionsList}">
 		            <td th:text="|${connection.firstName} ${connection.lastName}|">First Name and Last Name</td>
 		            <td>Send Money</td>
-		            <td>Unfriend</td>
+		            <td><a th:href="@{/connections?action=remove(buddyId=${connection.id})}">Unfriend</a></td>
 		        </tr>
 		    </tbody>
 		</table>

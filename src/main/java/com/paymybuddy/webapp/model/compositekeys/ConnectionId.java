@@ -1,4 +1,4 @@
-package com.paymybuddy.webapp.model.keys;
+package com.paymybuddy.webapp.model.compositekeys;
 
 import java.io.Serializable;
 

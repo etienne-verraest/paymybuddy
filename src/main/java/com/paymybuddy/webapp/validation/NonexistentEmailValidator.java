@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.paymybuddy.webapp.model.dto.UserRegistrationDto;
 import com.paymybuddy.webapp.service.UserService;
 
-public class EmailNotRegisteredValidator implements ConstraintValidator<EmailNotRegistered, UserRegistrationDto> {
+public class NonexistentEmailValidator implements ConstraintValidator<NonexistentEmail, UserRegistrationDto> {
 
 	@Autowired
 	UserService userService;
 
 	@Override
 	public boolean isValid(UserRegistrationDto userRegistrationDto, ConstraintValidatorContext context) {
-		return userService.findUserByMail(userRegistrationDto.getMail()) == null;
+		return userService.isAnExistingMail(userRegistrationDto.getMail());
 	}
 
 }

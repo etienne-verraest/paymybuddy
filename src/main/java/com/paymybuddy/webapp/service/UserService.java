@@ -1,5 +1,8 @@
 package com.paymybuddy.webapp.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +27,8 @@ public class UserService implements UserDetailsService {
 	/**
 	 * This method finds a user by its Id
 	 *
-	 * @param id				Integer : Id
-	 * @return					A User Object if found, otherwise returns null
+	 * @param id						Integer : Identifier of the user
+	 * @return							A User Object if found, otherwise returns null
 	 */
 	public User findUserById(Integer id) {
 		User user = userRepository.findUserById(id);
@@ -38,8 +41,8 @@ public class UserService implements UserDetailsService {
 	/**
 	 * This method finds a user by its email address
 	 *
-	 * @param mail					String : Mail address
-	 * @return						A User Object if found, otherwise returns null
+	 * @param mail						String : Mail address
+	 * @return							A User Object if found, otherwise returns null
 	 */
 	public User findUserByMail(String mail) {
 		User user = userRepository.findUserByMail(mail);
@@ -52,11 +55,11 @@ public class UserService implements UserDetailsService {
 	/**
 	 * This method returns true if a address mail exists in database
 	 *
-	 * @param mail					String : Mail address
-	 * @return						A boolean to true
+	 * @param mail						String : Mail address
+	 * @return							A boolean set to true if the mail address has been found
 	 */
 	public boolean isAnExistingMail(String mail) {
-		return userRepository.findUserByMail(mail) != null;
+		return (userRepository.findUserByMail(mail) != null);
 	}
 
 	/**
@@ -67,7 +70,7 @@ public class UserService implements UserDetailsService {
 	 * - firstName
 	 * - lastName
 	 *
-	 * @param userEntity		A User Object to add
+	 * @param userEntity				A User Object to add
 	 */
 	public void createUser(User userEntity) {
 
@@ -110,7 +113,7 @@ public class UserService implements UserDetailsService {
 	 * This method returns the mail address of the logged user for the current session
 	 *
 	 *
-	 * @return						String : the mail address
+	 * @return							String : the mail address
 	 */
 	public String getEmailOfLoggedUser() {
 		String mail = null;
@@ -122,5 +125,15 @@ public class UserService implements UserDetailsService {
 			mail = principal.toString();
 		}
 		return mail;
+	}
+
+	/**
+	 * This method returns a list with user information based on the identifiers provided
+	 *
+	 * @param identifiers				List<Integer> : a list of identifier
+	 * @return							List<User> with corresponding informations
+	 */
+	public List<User> getListOfUserFromIdentifiers(List<Integer> identifiers) {
+		return identifiers.stream().map(id -> userRepository.findUserById(id)).collect(Collectors.toList());
 	}
 }

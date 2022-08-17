@@ -31,10 +31,10 @@ public class RegistrationController {
 	private ModelMapper modelMapper;
 
 	/**
-	 * This GET request show the Registration Form for the client
+	 * This GET request show the registration form for the client
 	 *
 	 *
-	 * @return 							Generate RegistrationForm.html
+	 * @return 							Generate register.html
 	 */
 	@GetMapping("/register")
 	public ModelAndView showRegistrationForm() {

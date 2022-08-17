@@ -16,6 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
+import com.paymybuddy.webapp.exception.EmailNotFoundException;
+import com.paymybuddy.webapp.exception.IsAlreadyAConnectionException;
+import com.paymybuddy.webapp.exception.UserAddsHimselfException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.ConnectionAddDto;
 import com.paymybuddy.webapp.service.ConnectionService;
@@ -70,19 +73,25 @@ public class ConnectionsController {
 			}
 			return new ModelAndView(redirect, model);
 		}
+
 		return new ModelAndView(viewName, model);
 	}
 
 	/**
 	 * This POST request handles the addition of a new connection
 	 *
-	 * @param connectionAddDto					The command obect that handles the fields
-	 * @return
+	 * @param connectionAddDto					The command obect that handles the form to add a connection
+	 * @param bindingResult
+	 * @return									Connections view
+	 * @throws Exception						- EmailNotFoundException : The entered email is incorrect
+	 * 											- IsAlreadyAConnectionException : The user we want to add is already a buddy
+	 * 											- UserAddsHimselfException : The user wants to make connection with himself
 	 */
 	@PostMapping("/connections")
-	public ModelAndView addConnectionsForm(@Valid ConnectionAddDto connectionAddDto, BindingResult bindingResult) {
+	public ModelAndView addConnectionsForm(@Valid ConnectionAddDto connectionAddDto, BindingResult bindingResult)
+			throws Exception {
 
-		// If connectionAddDto has validation errors
+		// If there are errors when adding the connection
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(viewName);
 		}
@@ -91,20 +100,29 @@ public class ConnectionsController {
 		String mail = userService.getEmailOfLoggedUser();
 		User user = userService.findUserByMail(mail);
 
+		// Get buddies of logged user
 		Map<String, Object> model = new HashMap<>();
+		List<Integer> identifiers = connectionService.getUserBuddiesId(user.getId());
+		List<User> connections = userService.getListOfUserFromIdentifiers(identifiers);
+		model.put("connectionsList", connections); // Show user's connections
 
-		// Make a connection with a new user
-		// Depending on the boolean returned value, the redirect url has a different
-		// parameter (success or error)
-		boolean connectionIsMade = connectionService.makeConnections(user.getId(), connectionAddDto.getBuddyMail());
-		RedirectView redirect = new RedirectView();
-		if (connectionIsMade) {
-			redirect.setUrl(viewName + "?success");
-		} else {
-			redirect.setUrl(viewName + "?error");
+		// Try to make a connection with a user and catch exceptions if there is a
+		// logical error
+		try {
+			boolean connectionIsMade = connectionService.makeConnections(user.getId(), connectionAddDto.getBuddyMail());
+
+			RedirectView redirect = new RedirectView();
+			if (connectionIsMade) {
+				redirect.setUrl(viewName + "?success");
+				return new ModelAndView(redirect, model);
+			}
+		} catch (EmailNotFoundException | IsAlreadyAConnectionException | UserAddsHimselfException error) {
+			bindingResult.rejectValue("buddyMail", "", error.getMessage());
+			return new ModelAndView(viewName, model);
 		}
 
-		return new ModelAndView(redirect, model);
+		return new ModelAndView(viewName, model);
+
 	}
 
 }

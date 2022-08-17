@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.paymybuddy.webapp.exception.EmailNotFoundException;
-import com.paymybuddy.webapp.exception.IsAlreadyAConnectionException;
-import com.paymybuddy.webapp.exception.UserAddsHimselfException;
+import com.paymybuddy.webapp.exception.ConnectionAdditionException;
 import com.paymybuddy.webapp.model.Connection;
 import com.paymybuddy.webapp.repository.ConnectionRepository;
 
@@ -50,13 +48,13 @@ public class ConnectionService {
 					return true;
 				}
 
-				throw new IsAlreadyAConnectionException("You are already connected with this user");
+				throw new ConnectionAdditionException("You are already connected with this user");
 			}
 
-			throw new UserAddsHimselfException("You can't add yourself");
+			throw new ConnectionAdditionException("You can't add yourself");
 		}
 
-		throw new EmailNotFoundException("There is no users linked to this mail address");
+		throw new ConnectionAdditionException("There is no users linked to this mail address");
 	}
 
 	/**

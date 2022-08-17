@@ -18,7 +18,7 @@ public class LoginController {
 	/**
 	 * This GET request show the login form for the client
 	 *
-	 * @return 							Generate login.html
+	 * @return 								Generate login.html
 	 */
 	@GetMapping("/login")
 	public ModelAndView showLoginForm() {

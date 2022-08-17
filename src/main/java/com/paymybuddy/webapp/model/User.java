@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@SuppressWarnings("serial")
 @Entity
 @Table
 @Data
@@ -45,6 +46,8 @@ public class User implements UserDetails {
 		this.password = user.getPassword();
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
+		this.balance = user.getBalance();
+		this.connections = user.getConnections();
 	}
 
 	@Id

@@ -78,12 +78,12 @@ public class ConnectionsController {
 	/**
 	 * This POST request handles the addition of a new connection
 	 *
-	 * @param connectionAddDto					The command obect that handles the form to add a connection
+	 * @param connectionAddDto					The command obect that handles the "Add Connection" form
 	 * @param bindingResult
 	 * @return									Connections view
-	 * @throws Exception						- EmailNotFoundException : The entered email is incorrect
-	 * 											- IsAlreadyAConnectionException : The user we want to add is already a buddy
-	 * 											- UserAddsHimselfException : The user wants to make connection with himself
+	 * @throws ConnectionAdditionException		- The entered email is incorrect
+	 * 											- The user wants to add someone who is already a buddy
+	 * 											- The user wants to make connection with himself
 	 */
 	@PostMapping("/connections")
 	public ModelAndView addConnectionsForm(@Valid ConnectionAddDto connectionAddDto, BindingResult bindingResult)

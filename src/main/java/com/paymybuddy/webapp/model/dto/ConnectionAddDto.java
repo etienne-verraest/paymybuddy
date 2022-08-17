@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConnectionAddDto {
 
-	@NotEmpty(message = "The mail address you want to add is invalid")
+	@NotEmpty(message = "Email address must not be empty")
 	private String buddyMail;
 }

@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
-import com.paymybuddy.webapp.model.keys.ConnectionId;
+import com.paymybuddy.webapp.model.compositekeys.ConnectionId;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

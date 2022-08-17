@@ -16,7 +16,7 @@ package com.paymybuddy.webapp.model.dto;
 
 import javax.validation.constraints.NotEmpty;
 
-import com.paymybuddy.webapp.validation.EmailNotRegistered;
+import com.paymybuddy.webapp.validation.NonexistentEmail;
 import com.paymybuddy.webapp.validation.PasswordsMatch;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EmailNotRegistered
+@NonexistentEmail
 @PasswordsMatch
 public class UserRegistrationDto {
 

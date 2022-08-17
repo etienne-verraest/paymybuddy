@@ -1,6 +1,5 @@
 package com.paymybuddy.webapp.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -32,30 +32,53 @@ public class ConnectionsController {
 	@Autowired
 	private ConnectionService connectionService;
 
+	/**
+	 * This GET request show the connections page of the logged user
+	 * From there, the user can manage his connections (add or remove)
+	 *
+	 *
+	 * @param action							Optional, when set to "remove" it is used to delete a connection
+	 * @param buddyId							Optional, linked to the "action" parameter
+	 * @return									The connections page
+	 */
 	@GetMapping("/connections")
-	public ModelAndView showConnectionsPage() {
+	public ModelAndView showConnectionsPage(@RequestParam(required = false) String action,
+			@RequestParam(required = false) Integer buddyId) {
 
 		// Get current logged user
 		String mail = userService.getEmailOfLoggedUser();
 		User user = userService.findUserByMail(mail);
 
 		// Get buddies of logged user
-		List<User> connections = new ArrayList<>();
-		List<Integer> ids = connectionService.getUserBuddiesId(user.getId());
-		for (Integer id : ids) {
-			User buddy = userService.findUserById(id);
-			connections.add(buddy);
-		}
+		List<Integer> identifiers = connectionService.getUserBuddiesId(user.getId());
+		List<User> connections = userService.getListOfUserFromIdentifiers(identifiers);
 
 		// Update the model with fetched content from database
 		Map<String, Object> model = new HashMap<>();
 		model.put("connectionsList", connections); // Show user's connections
 		model.put("connectionAddDto", new ConnectionAddDto()); // DTO used as a Data Object for the adding form
 
+		// Handle deletion of connections, depending the success of the operation, the
+		// redirected url won't be the same
+		if ((action != null && buddyId != null) && action.equals("remove")) {
+			boolean removeConnection = connectionService.removeConnections(user.getId(), buddyId);
+			RedirectView redirect = new RedirectView();
+			if (removeConnection) {
+				redirect.setUrl(viewName + "?remove-connection-success");
+			} else {
+				redirect.setUrl(viewName + "?remove-connection-error");
+			}
+			return new ModelAndView(redirect, model);
+		}
 		return new ModelAndView(viewName, model);
-
 	}
 
+	/**
+	 * This POST request handles the addition of a new connection
+	 *
+	 * @param connectionAddDto					The command obect that handles the fields
+	 * @return
+	 */
 	@PostMapping("/connections")
 	public ModelAndView addConnectionsForm(@Valid ConnectionAddDto connectionAddDto, BindingResult bindingResult) {
 
@@ -76,9 +99,9 @@ public class ConnectionsController {
 		boolean connectionIsMade = connectionService.makeConnections(user.getId(), connectionAddDto.getBuddyMail());
 		RedirectView redirect = new RedirectView();
 		if (connectionIsMade) {
-			redirect.setUrl("/connections?success");
+			redirect.setUrl(viewName + "?success");
 		} else {
-			redirect.setUrl("/connections?error");
+			redirect.setUrl(viewName + "?error");
 		}
 
 		return new ModelAndView(redirect, model);

@@ -10,8 +10,8 @@ import javax.validation.Payload;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Constraint(validatedBy = EmailNotRegisteredValidator.class)
-public @interface EmailNotRegistered {
+@Constraint(validatedBy = NonexistentEmailValidator.class)
+public @interface NonexistentEmail {
 
 	String message() default "There is an existing account with this mail address";
 

@@ -15,8 +15,25 @@ public class BankAccountService {
 	@Autowired
 	UserService userService;
 
+	// TODO : Document methods
+
 	public BankAccount getBankAccountInformations(Integer userId) {
-		return bankAccountRepository.findByUserId(userId);
+		if (checkIfUserBankAccountExists(userId)) {
+			return bankAccountRepository.findByUserId(userId);
+		}
+		return null;
+	}
+
+	public boolean saveBankAccountInformations(BankAccount bankAccountEntity) {
+		if (bankAccountEntity != null) {
+			bankAccountRepository.save(bankAccountEntity);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean checkIfUserBankAccountExists(Integer userId) {
+		return (bankAccountRepository.findByUserId(userId) != null);
 	}
 
 }

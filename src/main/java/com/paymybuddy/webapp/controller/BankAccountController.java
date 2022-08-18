@@ -5,22 +5,22 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
+import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.BankAccountAddDto;
 import com.paymybuddy.webapp.service.BankAccountService;
 import com.paymybuddy.webapp.service.UserService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Controller
 public class BankAccountController {
 
@@ -30,38 +30,91 @@ public class BankAccountController {
 	@Autowired
 	private BankAccountService bankAccountService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	private static String viewName = ViewNameConstants.BANK_VIEW_NAME;
 
+	// TODO : Withdraw form
+
+	/**
+	 * This GET request show the bank account view
+	 * From there the user can add his bank account, and withdraw money
+	 *
+	 * @return										bank.html
+	 */
 	@GetMapping("/bank")
 	public ModelAndView showBankPage() {
 
 		// Get current logged user
 		String mail = userService.getEmailOfLoggedUser();
 		User user = userService.findUserByMail(mail);
-		System.out.println(bankAccountService.getBankAccountInformations(user.getId()).getBankName());
-
+		Integer userId = user.getId();
 		Map<String, Object> model = new HashMap<>();
-		model.put("bankAccountAddDto", new BankAccountAddDto());
-		// TODO : Put values and populate fields
+
+		// Populate the form with bank informations if they were already filled
+		// Otherwise, the command object has no values
+		BankAccountAddDto bankAccountAddDto;
+		BankAccount bankAccount = bankAccountService.getBankAccountInformations(userId);
+		if (bankAccount != null) {
+			bankAccountAddDto = modelMapper.map(bankAccount, BankAccountAddDto.class);
+		} else {
+			bankAccountAddDto = new BankAccountAddDto();
+		}
+
+		model.put("bankAccountAddDto", bankAccountAddDto);
 
 		return new ModelAndView(viewName, model);
 	}
 
+	/**
+	 * This POST request handles the creation or update of a bank account
+	 *
+	 * @param bankAccountAddDto						The command object that contains the values
+	 * @param bindingResult
+	 * @return										bank.html
+	 * @throws
+	 *
+	 */
 	@PostMapping("/bank")
 	public ModelAndView submitBankForm(@Valid BankAccountAddDto bankAccountAddDto, BindingResult bindingResult) {
 
-		// If there are errors when adding the connection
-		if (bindingResult.hasErrors()) {
-			return new ModelAndView(viewName);
-		}
+		// TODO : Update .html file with param.success and param.updatesuccess
 
 		// Get current logged user
 		String mail = userService.getEmailOfLoggedUser();
 		User user = userService.findUserByMail(mail);
-
-		// Get buddies of logged user
+		Integer userId = user.getId();
 		Map<String, Object> model = new HashMap<>();
+
+		// If there are errors when adding/updating bank account
+		if (bindingResult.hasErrors()) {
+			return new ModelAndView(viewName);
+		}
+
+		try {
+			RedirectView redirect = new RedirectView();
+
+			// If the informations are already populated, we do an update operation
+			if (bankAccountService.checkIfUserBankAccountExists(userId)) {
+				BankAccount bankAccount = bankAccountService.getBankAccountInformations(userId);
+				bankAccount.setBankName(bankAccountAddDto.getBankName());
+				bankAccount.setRib(bankAccountAddDto.getRib());
+				bankAccount.setIban(bankAccountAddDto.getIban());
+				bankAccountService.saveBankAccountInformations(bankAccount);
+				redirect.setUrl(viewName + "?updatesuccess");
+			} else // Otherwise, if there are no informations, we do a creation operation
+			{
+				BankAccount bankAccount = new BankAccount(user, bankAccountAddDto.getBankName(),
+						bankAccountAddDto.getRib(), bankAccountAddDto.getIban());
+				bankAccountService.saveBankAccountInformations(bankAccount);
+				redirect.setUrl(viewName + "?success");
+			}
+			return new ModelAndView(redirect, model);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
 		return new ModelAndView(viewName, model);
 	}
-
 }

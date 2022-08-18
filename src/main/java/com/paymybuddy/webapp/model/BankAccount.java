@@ -21,6 +21,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BankAccount {
 
+	public BankAccount(User user, String bankName, String rib, String iban) {
+		this.user = user;
+		this.bankName = bankName;
+		this.rib = rib;
+		this.iban = iban;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column

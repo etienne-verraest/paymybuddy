@@ -9,4 +9,6 @@ public class ViewNameConstants {
 	public static final String HOMEPAGE_VIEW_NAME = "index";
 
 	public static final String CONNECTIONS_VIEW_NAME = "connections";
+
+	public static final String BANK_VIEW_NAME = "bank";
 }

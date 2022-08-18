@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 	
 	<head>
 		<meta charset="ISO-8859-1">
@@ -9,7 +9,7 @@
 	<body>
 		<form method="post" th:action="@{/connections}" th:object="${connectionAddDto}">
 		  <div>
-		    <label for="buddyMmail">Add a buddy : </label>
+		    <label for="buddyMail">Add a buddy : </label>
 		    <input th:field="*{buddyMail}" type="text" name="buddyMail" id="buddyMail">
 		    <small th:errors="*{buddyMail}" class="text-danger">Mail address must not be empty</small>
 		  </div>

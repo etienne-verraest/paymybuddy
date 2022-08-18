@@ -26,10 +26,8 @@ public class BankAccount {
 	@Column
 	private Integer id;
 
-	@OneToOne
-	@MapsId
-	@JoinColumn(name = "user_id")
-	private User user;
+	@Column(name = "user_id", insertable = false, updatable = false)
+	private String userId;
 
 	@Column(name = "bank_name")
 	private String bankName;
@@ -39,5 +37,10 @@ public class BankAccount {
 
 	@Column
 	private String iban;
+
+	@OneToOne
+	@MapsId
+	@JoinColumn(name = "user_id")
+	private User user;
 
 }

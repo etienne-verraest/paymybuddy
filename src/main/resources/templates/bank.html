@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Pay My Buddy - Bank account</title>
+	</head>
+	
+	<body>
+		
+		<form method="post" th:action="@{/bank}" th:object="${bankAccountAddDto}">
+		  <div>
+		    <label for="bankName">Bank Name : </label>
+		    <input th:field="*{bankName}" type="text" name="bankName" id="bankName">
+		    <small th:errors="*{bankName}" class="text-danger">Bank Name must not be empty</small>
+		  </div>
+		 
+		 <div>
+		    <label for="rib">RIB : </label>
+		    <input th:field="*{rib}" type="text" name="rib" id="rib">
+		    <small th:errors="*{rib}" class="text-danger">RIB must not be empty</small>
+		  </div>
+		  
+		  <div>
+		    <label for="iban">IBAN : </label>
+		    <input th:field="*{iban}" type="text" name="iban" id="iban">
+		    <small th:errors="*{iban}" class="text-danger">IBAN must not be empty</small>
+		  </div>
+		    
+		  <div>
+		    <input type="submit" value="Add bank account">
+		  </div>
+		</form>
+	</body>
+</html>

@@ -12,6 +12,9 @@ import com.paymybuddy.webapp.config.constants.ViewNameConstants;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class HomePageController {
 
@@ -26,6 +29,8 @@ public class HomePageController {
 		// Get current logged user
 		String mail = userService.getEmailOfLoggedUser();
 		User user = userService.findUserByMail(mail);
+
+		log.info("{}", user.getBankAccount().getIban());
 
 		// Add some information in the model
 		Map<String, Object> model = new HashMap<>();

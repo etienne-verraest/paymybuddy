@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails {
 
 	/**
-	 * This constructor is used when a users registers
+	 * This constructor is used when a user registers
 	 */
 	public User(String mail, String password, String firstName, String lastName) {
 		this.mail = mail;
@@ -41,13 +43,8 @@ public class User implements UserDetails {
 	 * This constructor is used when a user login
 	 */
 	public User(User user) {
-		this.id = user.getId();
 		this.mail = user.getMail();
 		this.password = user.getPassword();
-		this.firstName = user.getFirstName();
-		this.lastName = user.getLastName();
-		this.balance = user.getBalance();
-		this.connections = user.getConnections();
 	}
 
 	@Id
@@ -72,6 +69,10 @@ public class User implements UserDetails {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userId")
 	private List<Connection> connections;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+	@PrimaryKeyJoinColumn
+	private BankAccount bankAccount;
 
 	/**
 	 * Spring Security login related methods

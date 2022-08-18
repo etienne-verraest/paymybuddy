@@ -27,7 +27,7 @@ public class BankAccount {
 	private Integer id;
 
 	@Column(name = "user_id", insertable = false, updatable = false)
-	private String userId;
+	private Integer userId;
 
 	@Column(name = "bank_name")
 	private String bankName;

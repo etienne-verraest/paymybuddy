@@ -30,8 +30,6 @@ public class HomePageController {
 		String mail = userService.getEmailOfLoggedUser();
 		User user = userService.findUserByMail(mail);
 
-		log.info("{}", user.getBankAccount().getIban());
-
 		// Add some information in the model
 		Map<String, Object> model = new HashMap<>();
 		model.put("firstName", user.getFirstName());

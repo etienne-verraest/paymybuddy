@@ -15,12 +15,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
+import com.paymybuddy.webapp.exception.AddingBankAccountException;
 import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.BankAccountAddDto;
 import com.paymybuddy.webapp.service.BankAccountService;
 import com.paymybuddy.webapp.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class BankAccountController {
 
@@ -36,6 +40,9 @@ public class BankAccountController {
 	private static String viewName = ViewNameConstants.BANK_VIEW_NAME;
 
 	// TODO : Withdraw form
+	// TODO : Remove bank account
+	// TODO : Update .html file with param.success and param.updatesuccess (for the
+	// post request)
 
 	/**
 	 * This GET request show the bank account view
@@ -55,7 +62,7 @@ public class BankAccountController {
 		// Populate the form with bank informations if they were already filled
 		// Otherwise, the command object has no values
 		BankAccountAddDto bankAccountAddDto;
-		BankAccount bankAccount = bankAccountService.getBankAccountInformations(userId);
+		BankAccount bankAccount = bankAccountService.getBankAccountInformation(userId);
 		if (bankAccount != null) {
 			bankAccountAddDto = modelMapper.map(bankAccount, BankAccountAddDto.class);
 		} else {
@@ -73,13 +80,11 @@ public class BankAccountController {
 	 * @param bankAccountAddDto						The command object that contains the values
 	 * @param bindingResult
 	 * @return										bank.html
-	 * @throws
+	 * @throws										AddingBankAccountException
 	 *
 	 */
 	@PostMapping("/bank")
 	public ModelAndView submitBankForm(@Valid BankAccountAddDto bankAccountAddDto, BindingResult bindingResult) {
-
-		// TODO : Update .html file with param.success and param.updatesuccess
 
 		// Get current logged user
 		String mail = userService.getEmailOfLoggedUser();
@@ -97,24 +102,20 @@ public class BankAccountController {
 
 			// If the informations are already populated, we do an update operation
 			if (bankAccountService.checkIfUserBankAccountExists(userId)) {
-				BankAccount bankAccount = bankAccountService.getBankAccountInformations(userId);
-				bankAccount.setBankName(bankAccountAddDto.getBankName());
-				bankAccount.setRib(bankAccountAddDto.getRib());
-				bankAccount.setIban(bankAccountAddDto.getIban());
-				bankAccountService.saveBankAccountInformations(bankAccount);
+				bankAccountService.updateBankAccountInformation(userId, bankAccountAddDto);
 				redirect.setUrl(viewName + "?updatesuccess");
 			} else // Otherwise, if there are no informations, we do a creation operation
 			{
 				BankAccount bankAccount = new BankAccount(user, bankAccountAddDto.getBankName(),
 						bankAccountAddDto.getRib(), bankAccountAddDto.getIban());
-				bankAccountService.saveBankAccountInformations(bankAccount);
+				bankAccountService.saveBankAccountInformation(bankAccount);
 				redirect.setUrl(viewName + "?success");
 			}
 			return new ModelAndView(redirect, model);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
 
-		return new ModelAndView(viewName, model);
+		} catch (AddingBankAccountException error) {
+			log.info("{}", error.getMessage());
+			return new ModelAndView(viewName, model);
+		}
 	}
 }

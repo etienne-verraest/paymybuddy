@@ -27,9 +27,10 @@
 		  </div>
 		    	    
 		  <div>
-		    <input type="submit" value="Add bank account">
+		    <input type="submit" th:value="${btnBankText}">
 		  </div>
 
 		</form>
+		<a href="/bank?action=remove"><button th:if="${btnBankText.equals('Update information')}" type="button">Remove bank account</button></a>
 	</body>
 </html>

@@ -3,7 +3,7 @@ package com.paymybuddy.webapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.paymybuddy.webapp.exception.AddingBankAccountException;
+import com.paymybuddy.webapp.exception.BankAccountServiceException;
 import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.dto.BankAccountAddDto;
 import com.paymybuddy.webapp.repository.BankAccountRepository;
@@ -35,16 +35,15 @@ public class BankAccountService {
 	 *
 	 * @param bankAccountEntity						The BankAccount entity we want to create
 	 * @return										True if the bank account is inserted
-	 * @throws AddingBankAccountException			If given information for insertion are incorrect
+	 * @throws BankAccountServiceException			If given information for insertion are incorrect
 	 */
-	public boolean saveBankAccountInformation(BankAccount bankAccountEntity) throws AddingBankAccountException {
+	public boolean saveBankAccountInformation(BankAccount bankAccountEntity) throws BankAccountServiceException {
 
 		if (bankAccountEntity != null) {
 			bankAccountRepository.save(bankAccountEntity);
 			return true;
 		}
-
-		throw new AddingBankAccountException("Information given to create bank account are incorrect");
+		throw new BankAccountServiceException("Information given to create bank account are incorrect");
 
 	}
 
@@ -54,20 +53,34 @@ public class BankAccountService {
 	 * @param userId								UserId we want to update
 	 * @param bankAccountAddDto						The information given for update
 	 * @return										True if bank account is updated
-	 * @throws AddingBankAccountException      		If the user doesn't have a bank account and tries to update it
+	 * @throws BankAccountServiceException      		If the user doesn't have a bank account and tries to update it
 	 */
 	public boolean updateBankAccountInformation(Integer userId, BankAccountAddDto bankAccountAddDto)
-			throws AddingBankAccountException {
+			throws BankAccountServiceException {
 
-		BankAccount bankAccount = bankAccountRepository.findByUserId(userId);
-		if (bankAccount != null) {
+		if (checkIfUserBankAccountExists(userId)) {
+			BankAccount bankAccount = bankAccountRepository.findByUserId(userId);
 			bankAccount.setBankName(bankAccountAddDto.getBankName());
 			bankAccount.setRib(bankAccountAddDto.getRib());
 			bankAccount.setIban(bankAccountAddDto.getIban());
 			bankAccountRepository.save(bankAccount);
 			return true;
 		}
-		throw new AddingBankAccountException("There is no existing bank account for this user");
+		throw new BankAccountServiceException("There is no existing bank account for this user");
+	}
+
+	/**
+	 * Delete bank account for a given user
+	 *
+	 * @param userId								UserID we want to delete
+	 * @return										True if the bank account has been deleted
+	 */
+	public boolean deleteBankAccount(Integer userId) throws BankAccountServiceException {
+		if (checkIfUserBankAccountExists(userId)) {
+			bankAccountRepository.deleteBankAccountFromUserId(userId);
+			return true;
+		}
+		throw new BankAccountServiceException("There is no existing bank account for this user");
 	}
 
 	/**

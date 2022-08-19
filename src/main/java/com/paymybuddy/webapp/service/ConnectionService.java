@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.paymybuddy.webapp.exception.AddingConnectionException;
+import com.paymybuddy.webapp.exception.ConnectionServiceException;
 import com.paymybuddy.webapp.model.Connection;
 import com.paymybuddy.webapp.repository.ConnectionRepository;
 
@@ -28,11 +28,11 @@ public class ConnectionService {
 	 * @param userId							The Id of the user that wants to add a buddy
 	 * @param buddyMail							The mail of the buddy that the user wants to add
 	 * @return boolean							True if the connection is successful, an error is thrown otherwise
-	 * @throws AddingConnectionException		- The entered email is incorrect
+	 * @throws ConnectionServiceException		- The entered email is incorrect
 	 * 											- The user wants to add someone who is already a buddy
 	 * 											- The user wants to make connection with himself
 	 */
-	public boolean makeConnections(Integer userId, String buddyMail) throws AddingConnectionException {
+	public boolean makeConnections(Integer userId, String buddyMail) throws ConnectionServiceException {
 		// Check if the entered email exists in database
 		if (userService.isAnExistingMail(buddyMail)) {
 			Integer buddyId = userService.findUserByMail(buddyMail).getId();
@@ -48,13 +48,13 @@ public class ConnectionService {
 					return true;
 				}
 
-				throw new AddingConnectionException("You are already connected with this user");
+				throw new ConnectionServiceException("You are already connected with this user");
 			}
 
-			throw new AddingConnectionException("You can't add yourself");
+			throw new ConnectionServiceException("You can't add yourself");
 		}
 
-		throw new AddingConnectionException("There is no users linked to this mail address");
+		throw new ConnectionServiceException("There is no users linked to this mail address");
 	}
 
 	/**

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
-import com.paymybuddy.webapp.exception.ConnectionAdditionException;
+import com.paymybuddy.webapp.exception.AddingConnectionException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.ConnectionAddDto;
 import com.paymybuddy.webapp.service.ConnectionService;
@@ -81,13 +81,13 @@ public class ConnectionsController {
 	 * @param connectionAddDto					The command obect that handles the "Add Connection" form
 	 * @param bindingResult
 	 * @return									Connections view
-	 * @throws ConnectionAdditionException		- The entered email is incorrect
+	 * @throws AddingConnectionException		- The entered email is incorrect
 	 * 											- The user wants to add someone who is already a buddy
 	 * 											- The user wants to make connection with himself
 	 */
 	@PostMapping("/connections")
 	public ModelAndView addConnectionsForm(@Valid ConnectionAddDto connectionAddDto, BindingResult bindingResult)
-			throws Exception {
+			throws AddingConnectionException {
 
 		// If there are errors when adding the connection
 		if (bindingResult.hasErrors()) {
@@ -114,7 +114,7 @@ public class ConnectionsController {
 				redirect.setUrl(viewName + "?success");
 				return new ModelAndView(redirect, model);
 			}
-		} catch (ConnectionAdditionException error) {
+		} catch (AddingConnectionException error) {
 			bindingResult.rejectValue("buddyMail", "", error.getMessage());
 			return new ModelAndView(viewName, model);
 		}

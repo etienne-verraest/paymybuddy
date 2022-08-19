@@ -11,11 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
-import com.paymybuddy.webapp.exception.AddingBankAccountException;
+import com.paymybuddy.webapp.exception.BankAccountServiceException;
 import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.BankAccountAddDto;
@@ -40,7 +41,6 @@ public class BankAccountController {
 	private static String viewName = ViewNameConstants.BANK_VIEW_NAME;
 
 	// TODO : Withdraw form
-	// TODO : Remove bank account
 	// TODO : Update .html file with param.success and param.updatesuccess (for the
 	// post request)
 
@@ -49,9 +49,10 @@ public class BankAccountController {
 	 * From there the user can add his bank account, and withdraw money
 	 *
 	 * @return										bank.html
+	 * @throws BankAccountServiceException
 	 */
 	@GetMapping("/bank")
-	public ModelAndView showBankPage() {
+	public ModelAndView showBankPage(@RequestParam(required = false) String action) throws BankAccountServiceException {
 
 		// Get current logged user
 		String mail = userService.getEmailOfLoggedUser();
@@ -59,14 +60,31 @@ public class BankAccountController {
 		Integer userId = user.getId();
 		Map<String, Object> model = new HashMap<>();
 
-		// Populate the form with bank informations if they were already filled
+		// Populate the form with bank information if they were already filled
 		// Otherwise, the command object has no values
+		// The button text will be set according to the action performed (insertion or
+		// update)
 		BankAccountAddDto bankAccountAddDto;
 		BankAccount bankAccount = bankAccountService.getBankAccountInformation(userId);
 		if (bankAccount != null) {
 			bankAccountAddDto = modelMapper.map(bankAccount, BankAccountAddDto.class);
+			model.put("btnBankText", "Update information");
 		} else {
 			bankAccountAddDto = new BankAccountAddDto();
+			model.put("btnBankText", "Add bank account");
+		}
+
+		// When an user's bank account exists, a "Remove bank Account" button will
+		// appear and allow the user to delete his account from database
+		if (action != null && action.equals("remove")) {
+			boolean removeBank = bankAccountService.deleteBankAccount(userId);
+			RedirectView redirect = new RedirectView();
+			if (removeBank) {
+				redirect.setUrl(viewName + "?remove-success");
+			} else {
+				redirect.setUrl(viewName + "?remove-error");
+			}
+			return new ModelAndView(redirect, model);
 		}
 
 		model.put("bankAccountAddDto", bankAccountAddDto);
@@ -80,7 +98,7 @@ public class BankAccountController {
 	 * @param bankAccountAddDto						The command object that contains the values
 	 * @param bindingResult
 	 * @return										bank.html
-	 * @throws										AddingBankAccountException
+	 * @throws										BankAccountServiceException
 	 *
 	 */
 	@PostMapping("/bank")
@@ -113,7 +131,7 @@ public class BankAccountController {
 			}
 			return new ModelAndView(redirect, model);
 
-		} catch (AddingBankAccountException error) {
+		} catch (BankAccountServiceException error) {
 			log.info("{}", error.getMessage());
 			return new ModelAndView(viewName, model);
 		}

@@ -55,8 +55,7 @@ public class BankAccountController {
 	public ModelAndView showBankPage(@RequestParam(required = false) String action) throws BankAccountServiceException {
 
 		// Get current logged user
-		String mail = userService.getEmailOfLoggedUser();
-		User user = userService.findUserByMail(mail);
+		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
 		Map<String, Object> model = new HashMap<>();
 
@@ -105,8 +104,7 @@ public class BankAccountController {
 	public ModelAndView submitBankForm(@Valid BankAccountAddDto bankAccountAddDto, BindingResult bindingResult) {
 
 		// Get current logged user
-		String mail = userService.getEmailOfLoggedUser();
-		User user = userService.findUserByMail(mail);
+		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
 		Map<String, Object> model = new HashMap<>();
 

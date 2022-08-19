@@ -111,11 +111,11 @@ public class UserService implements UserDetailsService {
 
 	/**
 	 * This method returns the mail address of the logged user for the current session
-	 *
+	 * This is a private method and is used by the getLoggedUser method.
 	 *
 	 * @return							String : the mail address
 	 */
-	public String getEmailOfLoggedUser() {
+	private String getEmailOfLoggedUser() {
 		String mail = null;
 		SecurityContext context = SecurityContextHolder.getContext();
 		Object principal = context.getAuthentication().getPrincipal();
@@ -125,6 +125,15 @@ public class UserService implements UserDetailsService {
 			mail = principal.toString();
 		}
 		return mail;
+	}
+
+	/**
+	 * Get current logged user
+	 *
+	 * @return							User object
+	 */
+	public User getLoggedUser() {
+		return userRepository.findUserByMail(getEmailOfLoggedUser());
 	}
 
 	/**

@@ -47,8 +47,7 @@ public class ConnectionsController {
 			@RequestParam(required = false) Integer buddyId) {
 
 		// Get current logged user
-		String mail = userService.getEmailOfLoggedUser();
-		User user = userService.findUserByMail(mail);
+		User user = userService.getLoggedUser();
 
 		// Get buddies of logged user
 		List<Integer> identifiers = connectionService.getUserBuddiesId(user.getId());
@@ -95,8 +94,7 @@ public class ConnectionsController {
 		}
 
 		// Get current logged user
-		String mail = userService.getEmailOfLoggedUser();
-		User user = userService.findUserByMail(mail);
+		User user = userService.getLoggedUser();
 
 		// Get buddies of logged user
 		Map<String, Object> model = new HashMap<>();

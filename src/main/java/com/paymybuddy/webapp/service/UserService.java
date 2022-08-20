@@ -74,7 +74,7 @@ public class UserService implements UserDetailsService {
 	 * @param userEntity						A User Object to add
 	 * @throws UserServiceException
 	 */
-	public void createUser(User userEntity) throws UserServiceException {
+	public void createUser(User userEntity) {
 
 		// If our user entity is filled with datas, then we can create it
 		if (userEntity != null) {
@@ -93,8 +93,6 @@ public class UserService implements UserDetailsService {
 					"[User service] Created a new user with the following information : Mail={} firstName={} lastName={}",
 					userMail, firstName, lastName);
 		}
-
-		throw new UserServiceException("Error while creating a new user");
 	}
 
 	/**

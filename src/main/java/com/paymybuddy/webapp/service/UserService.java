@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.paymybuddy.webapp.exception.UserServiceException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.repository.UserRepository;
 
@@ -27,8 +28,8 @@ public class UserService implements UserDetailsService {
 	/**
 	 * This method finds a user by its Id
 	 *
-	 * @param id						Integer : Identifier of the user
-	 * @return							A User Object if found, otherwise returns null
+	 * @param id								Integer : Identifier of the user
+	 * @return									A User Object if found, otherwise returns null
 	 */
 	public User findUserById(Integer id) {
 		User user = userRepository.findUserById(id);
@@ -41,8 +42,8 @@ public class UserService implements UserDetailsService {
 	/**
 	 * This method finds a user by its email address
 	 *
-	 * @param mail						String : Mail address
-	 * @return							A User Object if found, otherwise returns null
+	 * @param mail								String : Mail address
+	 * @return									A User Object if found, otherwise returns null
 	 */
 	public User findUserByMail(String mail) {
 		User user = userRepository.findUserByMail(mail);
@@ -55,8 +56,8 @@ public class UserService implements UserDetailsService {
 	/**
 	 * This method returns true if a address mail exists in database
 	 *
-	 * @param mail						String : Mail address
-	 * @return							A boolean set to true if the mail address has been found
+	 * @param mail								String : Mail address
+	 * @return									A boolean set to true if the mail address has been found
 	 */
 	public boolean isAnExistingMail(String mail) {
 		return (userRepository.findUserByMail(mail) != null);
@@ -70,9 +71,10 @@ public class UserService implements UserDetailsService {
 	 * - firstName
 	 * - lastName
 	 *
-	 * @param userEntity				A User Object to add
+	 * @param userEntity						A User Object to add
+	 * @throws UserServiceException
 	 */
-	public void createUser(User userEntity) {
+	public void createUser(User userEntity) throws UserServiceException {
 
 		// If our user entity is filled with datas, then we can create it
 		if (userEntity != null) {
@@ -90,8 +92,9 @@ public class UserService implements UserDetailsService {
 			log.info(
 					"[User service] Created a new user with the following information : Mail={} firstName={} lastName={}",
 					userMail, firstName, lastName);
-
 		}
+
+		throw new UserServiceException("Error while creating a new user");
 	}
 
 	/**
@@ -130,19 +133,66 @@ public class UserService implements UserDetailsService {
 	/**
 	 * Get current logged user
 	 *
-	 * @return							User object
+	 * @return								User object
 	 */
 	public User getLoggedUser() {
 		return userRepository.findUserByMail(getEmailOfLoggedUser());
 	}
 
 	/**
-	 * This method returns a list with user information based on the identifiers provided
+	 * Return a list with user information based on the identifiers provided
 	 *
-	 * @param identifiers				List<Integer> : a list of identifier
-	 * @return							List<User> with corresponding informations
+	 * @param identifiers						List<Integer> : a list of identifier
+	 * @return									List<User> with corresponding informations
 	 */
 	public List<User> getListOfUserFromIdentifiers(List<Integer> identifiers) {
 		return identifiers.stream().map(id -> userRepository.findUserById(id)).collect(Collectors.toList());
+	}
+
+	/**
+	 * Update user balance when withdrawing money from bank account
+	 *
+	 * @param userId							ID of the user we want to update
+	 * @param amountToAdd						The amount to add
+	 * @return									True if the amount was successfully added
+	 * @throws UserServiceException				If user was not found
+	 */
+	public boolean withdrawMoneyAndUpdateBalance(Integer userId, double amountToAdd) throws UserServiceException {
+
+		User user = userRepository.findUserById(userId);
+		if (user != null) {
+			double balance = user.getBalance();
+			double totalBalance = balance + amountToAdd;
+			user.setBalance(totalBalance);
+			userRepository.save(user);
+			log.info("New user balance : {} € ", totalBalance);
+			return true;
+		}
+		throw new UserServiceException("User was not found");
+	}
+
+	/**
+	 * Update user balance when depositing money on bank account
+	 *
+	 * @param userId							ID of the user we want to update
+	 * @param amountToSubtract					The amount to subtract from the balance
+	 * @return									True
+	 * @throws UserServiceException				- If amount to deposit is more than current account balance
+	 * 											- If user was not found
+	 */
+	public boolean depositMoneyAndUpdateBalance(Integer userId, double amountToSubtract) throws UserServiceException {
+		User user = userRepository.findUserById(userId);
+		if (user != null) {
+			double balance = user.getBalance();
+			if (amountToSubtract <= balance) {
+				double totalBalance = balance - amountToSubtract;
+				user.setBalance(totalBalance);
+				userRepository.save(user);
+				log.info("New user balance : {} € ", totalBalance);
+				return true;
+			}
+			throw new UserServiceException("Amount to deposit is more than your account balance");
+		}
+		throw new UserServiceException("User was not found");
 	}
 }

@@ -6,7 +6,8 @@
 	</head>
 	
 	<body>
-		
+		<!-- Bank Account information form -->
+		<span th:text="'Balance : ' + ${balance} + ' €'">Balance : 10 €</span><br>
 		<form method="post" th:action="@{/bank}" th:object="${bankAccountAddDto}">
 		  <div>
 		    <label for="bankName">Bank Name : </label>
@@ -41,6 +42,8 @@
 		<span th:if="${param.remove_error}">Error while removing bank account</span>
 		
 		<br>
+		
+		<!--  Withdraw money form -->
 		<div th:if="${accountIsSet}">
 			<form method="post" th:action="@{/bank-withdraw}" th:object="${bankAccountWithdrawDto}">
 				<label for="withdrawMoney">Withdraw money :</label>
@@ -48,7 +51,23 @@
 	       		min="1" placeholder="1.0" step="0.01">
 	       		<small th:errors="*{withdrawMoney}" class="text-danger">Minimum amount is 1€.</small>
 	       		<input type="submit" value = "Withdraw money">
+	       		<span th:if="${param.withdraw_success}">Successfully withdrew money</span>
 	       	</form>
 		</div>
+		
+		<br>
+		
+		<!-- Deposit money form -->
+		<div th:if="${accountIsSet}">
+			<form method="post" th:action="@{/bank-deposit}" th:object="${bankAccountDepositDto}">
+				<label for="depositMoney">Deposit money :</label>
+				<input th:field="*{depositMoney}" type="number" id="depositMoney" name="depositMoney"
+	       		min="1" th:max="${balance}" placeholder="1.0" step="0.01">
+	       		<small th:errors="*{depositMoney}" class="text-danger">Minimum amount is 1€.</small>
+	       		<input type="submit" value = "Deposit money">
+	       		<span th:if="${param.deposit_success}">Successfully deposited money to bank account</span>
+	       	</form>
+		</div>
+		
 	</body>
 </html>

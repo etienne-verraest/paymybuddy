@@ -17,9 +17,11 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
 import com.paymybuddy.webapp.exception.BankAccountServiceException;
+import com.paymybuddy.webapp.exception.UserServiceException;
 import com.paymybuddy.webapp.model.BankAccount;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.BankAccountAddDto;
+import com.paymybuddy.webapp.model.dto.BankAccountDepositDto;
 import com.paymybuddy.webapp.model.dto.BankAccountWithdrawDto;
 import com.paymybuddy.webapp.service.BankAccountService;
 import com.paymybuddy.webapp.service.UserService;
@@ -40,8 +42,6 @@ public class BankAccountController {
 	private ModelMapper modelMapper;
 
 	private static String viewName = ViewNameConstants.BANK_VIEW_NAME;
-
-	private Map<String, Object> model = new HashMap<>();
 
 	// TODO : Withdraw real transaction in database
 
@@ -69,9 +69,12 @@ public class BankAccountController {
 			bankAccountAddDto = new BankAccountAddDto();
 		}
 
+		Map<String, Object> model = new HashMap<>();
 		model.put("bankAccountAddDto", bankAccountAddDto);
 		model.put("accountIsSet", bankAccountService.checkIfUserBankAccountExists(userId));
 		model.put("bankAccountWithdrawDto", new BankAccountWithdrawDto());
+		model.put("bankAccountDepositDto", new BankAccountDepositDto());
+		model.put("balance", user.getBalance());
 
 		// When an user's bank account exists, a "Remove bank Account" button will
 		// appear and allow the user to delete his account from database
@@ -83,7 +86,7 @@ public class BankAccountController {
 			} else {
 				redirect.setUrl(viewName + "?remove_error");
 			}
-			return new ModelAndView(redirect, model);
+			return new ModelAndView(redirect, new HashMap<>());
 		}
 
 		return new ModelAndView(viewName, model);
@@ -109,7 +112,7 @@ public class BankAccountController {
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(viewName);
 		}
-
+		Map<String, Object> model = new HashMap<>();
 		try {
 			RedirectView redirect = new RedirectView();
 
@@ -134,21 +137,52 @@ public class BankAccountController {
 	}
 
 	@PostMapping("/bank-withdraw")
-	public ModelAndView submitBankForm(@Valid BankAccountWithdrawDto bankAccountWithdrawDto,
-			BindingResult bindingResult) {
+	public ModelAndView submitBankWithdrawForm(@Valid BankAccountWithdrawDto bankAccountWithdrawDto,
+			BindingResult bindingResult) throws UserServiceException {
 
 		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
 
-		// If there are errors when adding/updating bank account
+		if (bindingResult.hasErrors()) {
+			return new ModelAndView(viewName);
+		}
+		Map<String, Object> model = new HashMap<>();
+
+		// Update user balance
+		double money = bankAccountWithdrawDto.getWithdrawMoney();
+		userService.withdrawMoneyAndUpdateBalance(userId, money);
+
+		RedirectView redirect = new RedirectView();
+		redirect.setUrl(viewName + "?withdraw_success");
+
+		return new ModelAndView(redirect, model);
+	}
+
+	@PostMapping("/bank-deposit")
+	public ModelAndView submitBankDepositForm(@Valid BankAccountDepositDto bankAccountDepositDto,
+			BindingResult bindingResult) {
+
+		// Get current logged user
+		User user = userService.getLoggedUser();
+		Integer userId = user.getId();
+		Map<String, Object> model = new HashMap<>();
+
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(viewName);
 		}
 
-		double money = bankAccountWithdrawDto.getWithdrawMoney();
-		log.info("Money withdrew : {} €", money);
+		RedirectView redirect = new RedirectView();
 
-		return new ModelAndView(viewName, model);
+		try {
+			double money = bankAccountDepositDto.getDepositMoney();
+			userService.depositMoneyAndUpdateBalance(userId, money);
+			redirect.setUrl(viewName + "?deposit_success");
+		} catch (UserServiceException error) {
+			bindingResult.rejectValue("depositMoney", "", error.getMessage());
+			return new ModelAndView(viewName, model);
+		}
+
+		return new ModelAndView(redirect, model);
 	}
 }

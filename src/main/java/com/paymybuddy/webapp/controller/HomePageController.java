@@ -30,6 +30,7 @@ public class HomePageController {
 		Map<String, Object> model = new HashMap<>();
 		model.put("firstName", user.getFirstName());
 		model.put("lastName", user.getLastName());
+		model.put("balance", user.getBalance());
 
 		return new ModelAndView(viewName, model);
 

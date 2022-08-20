@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
+import com.paymybuddy.webapp.exception.UserServiceException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.UserRegistrationDto;
 import com.paymybuddy.webapp.service.UserService;
@@ -53,10 +54,11 @@ public class RegistrationController {
 	 *
 	 * @param userRegistrationDto				The userRegistrationDto object that is populated from the form
 	 * @return									Redirect the user to the home page or to the form if there are errors
+	 * @throws UserServiceException
 	 */
 	@PostMapping("/register")
 	public ModelAndView submitRegistrationForm(@Valid UserRegistrationDto userRegistrationDto,
-			BindingResult bindingResult) {
+			BindingResult bindingResult) throws UserServiceException {
 
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(viewName);

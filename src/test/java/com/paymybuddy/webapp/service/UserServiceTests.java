@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.paymybuddy.webapp.exception.UserServiceException;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.repository.UserRepository;
 
@@ -77,7 +78,7 @@ class UserServiceTests {
 	}
 
 	@Test
-	void testCreateUser_VerifyThat_RepositoryIsCalled() {
+	void testCreateUser_VerifyThat_RepositoryIsCalled() throws UserServiceException {
 
 		// ARRANGE
 		when(userRepositoryMock.save(any(User.class))).thenReturn(mockUser);
@@ -91,7 +92,7 @@ class UserServiceTests {
 	}
 
 	@Test
-	void testCreateNullUser_VerifyThat_RepositoryIsNotCalled() {
+	void testCreateNullUser_VerifyThat_RepositoryIsNotCalled() throws UserServiceException {
 
 		// ARRANGE
 		lenient().when(userRepositoryMock.save(any(User.class))).thenReturn(null);

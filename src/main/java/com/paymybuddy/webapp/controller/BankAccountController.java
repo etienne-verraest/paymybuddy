@@ -75,6 +75,8 @@ public class BankAccountController {
 		model.put("bankAccountWithdrawDto", new BankAccountWithdrawDto());
 		model.put("bankAccountDepositDto", new BankAccountDepositDto());
 		model.put("balance", user.getBalance());
+		model.put("firstName", user.getFirstName());
+		model.put("lastName", user.getLastName());
 
 		// When an user's bank account exists, a "Remove bank Account" button will
 		// appear and allow the user to delete his account from database

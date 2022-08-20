@@ -58,7 +58,7 @@ public class RegistrationController {
 	 */
 	@PostMapping("/register")
 	public ModelAndView submitRegistrationForm(@Valid UserRegistrationDto userRegistrationDto,
-			BindingResult bindingResult) throws UserServiceException {
+			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(viewName);
@@ -69,7 +69,7 @@ public class RegistrationController {
 		userService.createUser(user);
 
 		RedirectView redirect = new RedirectView();
-		redirect.setUrl(viewName + "?registered");
+		redirect.setUrl(ViewNameConstants.LOGIN_VIEW_NAME + "?registered");
 		return new ModelAndView(redirect);
 	}
 

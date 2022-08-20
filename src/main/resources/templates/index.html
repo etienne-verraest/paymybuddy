@@ -6,8 +6,7 @@
 	</head>
 
 	<body>
-		<span th:text="'Hello ' + ${firstName} + ' ' + ${lastName} + '!'">Hello [firstName] [lastName]</span><br>
-		<span th:text="'Balance : ' + ${balance} + ' €'">Balance : 10 €</span><br>
+		<span th:text="${firstName} + ' ' + ${lastName} + ' (balance : ' + ${balance} + ' €)'">Hello [firstName] [lastName]</span><br>
 		<a href="/bank"> Add your bank account </a><br>
 		<a href="/connections"> Add a buddy </a><br>
 		<a href="/logout"> Log out </a>	

@@ -95,7 +95,7 @@ class ConnectionServiceTests {
 	}
 
 	@Test
-	void testMakeCOnnections_ShouldReturn_AlreadyFriend() {
+	void testMakeConnections_ShouldReturn_AlreadyFriend() {
 
 		// ARRANGE
 		when(userService.isAnExistingMail(anyString())).thenReturn(true);
@@ -110,7 +110,7 @@ class ConnectionServiceTests {
 	}
 
 	@Test
-	void testMakeCOnnections_ShouldReturn_UserTriesToAddHimself() {
+	void testMakeConnections_ShouldReturn_UserTriesToAddHimself() {
 
 		// ARRANGE
 		when(userService.isAnExistingMail(anyString())).thenReturn(true);

@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.paymybuddy.webapp.config.constants.ViewNameConstants;
 import com.paymybuddy.webapp.service.UserService;
 
 @WebMvcTest(controllers = RegistrationController.class)
@@ -30,7 +31,7 @@ class RegistrationControllerTests {
 	@Test
 	void testShowRegistrationForm() throws Exception {
 		mockMvc.perform(get("/register")).andExpect(status().is2xxSuccessful()) //
-				.andExpect(view().name("RegistrationForm")) //
+				.andExpect(view().name(ViewNameConstants.REGISTRATION_VIEW_NAME)) //
 				.andExpect(model().attributeExists("userRegistrationDto")); //
 	}
 

@@ -57,6 +57,10 @@ public class ConnectionsController {
 		Map<String, Object> model = new HashMap<>();
 		model.put("connectionsList", connections); // Show user's connections
 		model.put("connectionAddDto", new ConnectionAddDto()); // DTO used as a Data Object for the adding form
+		model.put("firstName", user.getFirstName());
+		model.put("lastName", user.getLastName());
+		model.put("balance", user.getBalance());
+		model.put("hasConnections", !connections.isEmpty());
 
 		// Handle deletion of connections, depending the success of the operation, the
 		// redirected url won't be the same
@@ -64,11 +68,11 @@ public class ConnectionsController {
 			boolean removeConnection = connectionService.removeConnections(user.getId(), buddyId);
 			RedirectView redirect = new RedirectView();
 			if (removeConnection) {
-				redirect.setUrl(viewName + "?remove-connection-success");
+				redirect.setUrl(viewName + "?remove_connection_success");
 			} else {
-				redirect.setUrl(viewName + "?remove-connection-error");
+				redirect.setUrl(viewName + "?remove_connection_error");
 			}
-			return new ModelAndView(redirect, model);
+			return new ModelAndView(redirect, new HashMap<>());
 		}
 
 		return new ModelAndView(viewName, model);

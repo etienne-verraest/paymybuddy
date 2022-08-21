@@ -21,16 +21,16 @@
                         <small th:text="${firstName} + ' ' + ${lastName} + ' (balance : ' + ${balance} + ' €)'" class="fw-normal">Etienne Verraest (balance : 10 €)</small></span>
                         <ul class="nav justify-content-end">
                             <li class="nav-item">
-                              <a class="nav-link active" aria-current="page" href="#">Home</a>
+                              <a class="nav-link"href="/">Home</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" href="#">Bank Account</a>
+                              <a class="nav-link active" aria-current="page" href="/bank">Bank Account</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" href="#">Connections</a>
+                              <a class="nav-link" href="/connections">Connections</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link disabled">Logout</a>
+                              <a class="nav-link" href="/logout">Logout</a>
                             </li>
                           </ul>
                         </div> 
@@ -76,10 +76,10 @@
                     </form>
                     <!-- End of Bank Account Form -->
                     
-                    <div th:if="${param.success}" class="alert alert-success" role="alert">Successfully added bank account</div>
-                    <div th:if="${param.update_success}" class="alert alert-success" role="alert">Successfully updated bank account</div> 
-                    <div th:if="${param.remove_success}" class="alert alert-success" role="alert">Successfully removed bank account</div>
-                    <div th:if="${param.remove_error}" class="alert alert-danger" role="alert">Error while removing bank account</div>  
+                    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">Successfully added bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+                    <div th:if="${param.update_success}" class="alert alert-success alert-dismissible fade show" role="alert">Successfully updated bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div> 
+                    <div th:if="${param.remove_success}" class="alert alert-success alert-dismissible fade show" role="alert">Successfully removed bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+                    <div th:if="${param.remove_error}" class="alert alert-danger alert-dismissible fade show" role="alert">Error while removing bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>  
                 </div>
                 <!-- End of left column -->
 
@@ -106,7 +106,7 @@
                                 <small th:errors="*{withdrawMoney}" class="text-danger">Minimum amount is 1€.</small>
                                 <input type="submit"class="btn buddy-btn-green mt-1" value="Withdraw money">
                             </form>
-                            <div th:if="${param.withdraw_success}" class="alert alert-info" role="alert">Successfully withdrew money</div>                          
+                            <div th:if="${param.withdraw_success}" class="alert alert-info alert-dismissible fade show " role="alert">Successfully withdrew money from bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>                          
                         </div>
                     </div>
                 
@@ -120,7 +120,7 @@
                                 <small th:errors="*{depositMoney}" class="text-danger">Minimum amount is 1€.</small>
                                 <input type="submit"class="btn buddy-btn-green mt-1"  value="Deposit money">
                             </form>
-                            <div th:if="${param.deposit_success}" class="alert alert-info" role="alert">Successfully deposited money to bank account</div>                          
+                            <div th:if="${param.deposit_success}" class="alert alert-info alert-dismissible fade show" role="alert">Successfully deposited money to bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>                          
                         </div>
                     </div>
 

@@ -38,13 +38,11 @@ public class BankAccountService {
 	 * @throws BankAccountServiceException			If given information for insertion are incorrect
 	 */
 	public boolean saveBankAccountInformation(BankAccount bankAccountEntity) throws BankAccountServiceException {
-
 		if (bankAccountEntity != null) {
 			bankAccountRepository.save(bankAccountEntity);
 			return true;
 		}
 		throw new BankAccountServiceException("Information given to create bank account are incorrect");
-
 	}
 
 	/**

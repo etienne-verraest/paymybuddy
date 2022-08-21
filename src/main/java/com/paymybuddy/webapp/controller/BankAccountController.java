@@ -43,8 +43,6 @@ public class BankAccountController {
 
 	private static String viewName = ViewNameConstants.BANK_VIEW_NAME;
 
-	// TODO : Withdraw real transaction in database
-
 	/**
 	 * This GET request show the bank account view
 	 * From there the user can add his bank account, and withdraw money

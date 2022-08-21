@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.paymybuddy.webapp.config.constants.ViewNameConstants;
 import com.paymybuddy.webapp.service.UserService;
 
 @WebMvcTest(controllers = LoginController.class)
@@ -37,7 +38,7 @@ class LoginControllerTests {
 	@Test
 	void testshowLoginForm() throws Exception {
 		mockMvc.perform(get("/login")).andExpect(status().is2xxSuccessful()) //
-				.andExpect(view().name("LoginForm")) //
+				.andExpect(view().name(ViewNameConstants.LOGIN_VIEW_NAME)) //
 				.andExpect(model().attributeExists("userLoginDto")); //
 	}
 }

@@ -4,10 +4,14 @@
 }
 
 .buddy-font-green {
-    color: #77BF63;
+    color: #77BF63 !important;
 }
 
 .buddy-btn-green {
-    background-color: #77BF63  !important;
-    color:#fefefe !important;
+    --bs-btn-color: #fff !important;
+    --bs-btn-bg: #77BF63 !important ;
+    --bs-btn-border-color: #77BF63;
+    --bs-btn-hover-bg: #369957;
+    --bs-btn-hover-border-color: #369957;
+    --bs-btn-hover-color: #fff;
 }

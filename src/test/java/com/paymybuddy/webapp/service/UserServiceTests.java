@@ -11,6 +11,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,15 +39,24 @@ class UserServiceTests {
 	UserRepository userRepositoryMock;
 
 	static User mockUser;
+	static User mockBuddy;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		mockUser = new User();
 		mockUser.setId(1);
-		mockUser.setFirstName("Alpha");
-		mockUser.setLastName("Bravo");
-		mockUser.setMail("test@localhost.fr");
+		mockUser.setFirstName("Floyd");
+		mockUser.setLastName("Lilly");
+		mockUser.setMail("f.lilly@localhost.fr");
 		mockUser.setPassword(new BCryptPasswordEncoder().encode("pass"));
+		mockUser.setBalance(10.0);
+
+		mockBuddy = new User();
+		mockBuddy.setId(2);
+		mockBuddy.setFirstName("Ronald");
+		mockBuddy.setLastName("Carlson");
+		mockBuddy.setMail("r.carlson@localhost.fr");
+		mockBuddy.setPassword(new BCryptPasswordEncoder().encode("password"));
 	}
 
 	@Test
@@ -58,8 +70,8 @@ class UserServiceTests {
 
 		// ASSERT
 		assertThat(response.getId()).isEqualTo(1);
-		assertThat(response.getMail()).isEqualTo("test@localhost.fr");
-		assertThat(response.getFirstName()).isEqualTo("Alpha");
+		assertThat(response.getMail()).isEqualTo("f.lilly@localhost.fr");
+		assertThat(response.getFirstName()).isEqualTo("Floyd");
 	}
 
 	@Test
@@ -69,12 +81,12 @@ class UserServiceTests {
 		when(userRepositoryMock.findUserByMail(anyString())).thenReturn(mockUser);
 
 		// ACT
-		User response = userService.findUserByMail("test@localhost.fr");
+		User response = userService.findUserByMail("f.lilly@localhost.fr");
 
 		// ASSERT
 		assertThat(response.getId()).isEqualTo(1);
-		assertThat(response.getMail()).isEqualTo("test@localhost.fr");
-		assertThat(response.getLastName()).isEqualTo("Bravo");
+		assertThat(response.getMail()).isEqualTo("f.lilly@localhost.fr");
+		assertThat(response.getLastName()).isEqualTo("Lilly");
 	}
 
 	@Test
@@ -112,10 +124,10 @@ class UserServiceTests {
 		when(userRepositoryMock.findUserByMail(anyString())).thenReturn(mockUser);
 
 		// ACT
-		UserDetails details = userService.loadUserByUsername("test@localhost.fr");
+		UserDetails details = userService.loadUserByUsername("f.lilly@localhost.fr");
 
 		// ASSERT
-		assertThat(details.getUsername()).isEqualTo("test@localhost.fr");
+		assertThat(details.getUsername()).isEqualTo("f.lilly@localhost.fr");
 		assertThat(details.getAuthorities()).hasSize(1);
 	}
 
@@ -131,5 +143,82 @@ class UserServiceTests {
 		// ASSERT
 		assertThrows(UsernameNotFoundException.class, executable);
 
+	}
+
+	@Test
+	void testGetListOfUserFromIdentifiers_ShouldReturn_ListOfUser() {
+
+		// ARRANGE
+		List<Integer> identifiers = new ArrayList<>();
+		identifiers.add(1);
+		identifiers.add(2);
+		when(userRepositoryMock.findUserById(1)).thenReturn(mockUser);
+		when(userRepositoryMock.findUserById(2)).thenReturn(mockBuddy);
+
+		// ACT
+		List<User> response = userService.getListOfUserFromIdentifiers(identifiers);
+
+		// ASSERT
+		assertThat(response).hasSize(2);
+		assertThat(response.get(0).getMail()).isEqualTo("f.lilly@localhost.fr");
+		assertThat(response.get(1).getMail()).isEqualTo("r.carlson@localhost.fr");
+	}
+
+	@Test
+	void testWithdrawMoneyAndUpdateBalance_ShouldReturn_True() throws UserServiceException {
+
+		// ARRANGE
+		when(userRepositoryMock.findUserById(anyInt())).thenReturn(mockUser);
+		when(userRepositoryMock.save(any(User.class))).thenReturn(mockUser);
+
+		// ACT AND ASSERT
+		boolean response = userService.withdrawMoneyAndUpdateBalance(1, 10.0);
+
+		// ASSERT
+		assertThat(response).isTrue();
+		verify(userRepositoryMock, times(1)).save(mockUser);
+	}
+
+	@Test
+	void testWithdrawMoneyAndUpdateBalance_ShouldThrow_ExceptionUserNotFound() throws UserServiceException {
+
+		// ARRANGE
+		when(userRepositoryMock.findUserById(anyInt())).thenReturn(null);
+
+		// ACT AND ASSERT
+		Executable executable = () -> userService.withdrawMoneyAndUpdateBalance(99, 10.0);
+
+		// ASSERT
+		assertThrows(UserServiceException.class, executable);
+		verify(userRepositoryMock, never()).save(null);
+	}
+
+	@Test
+	void testDepositMoneyAndUpdateBalance_ShouldReturn_True() throws UserServiceException {
+
+		// ARRANGE
+		when(userRepositoryMock.findUserById(anyInt())).thenReturn(mockUser);
+		when(userRepositoryMock.save(any(User.class))).thenReturn(mockUser);
+
+		// ACT AND ASSERT
+		boolean response = userService.depositMoneyAndUpdateBalance(1, 10.0);
+
+		// ASSERT
+		assertThat(response).isTrue();
+		verify(userRepositoryMock, times(1)).save(mockUser);
+	}
+
+	@Test
+	void testDepositMoneyAndUpdateBalance_ShoulThrow_Exception() throws UserServiceException {
+
+		// ARRANGE
+		when(userRepositoryMock.findUserById(anyInt())).thenReturn(mockUser);
+
+		// ACT AND ASSERT
+		Executable executable = () -> userService.depositMoneyAndUpdateBalance(1, 15.0);
+
+		// ASSERT
+		assertThrows(UserServiceException.class, executable);
+		verify(userRepositoryMock, never()).save(mockUser);
 	}
 }

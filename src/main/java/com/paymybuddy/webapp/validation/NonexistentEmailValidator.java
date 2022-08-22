@@ -15,7 +15,7 @@ public class NonexistentEmailValidator implements ConstraintValidator<Nonexisten
 
 	@Override
 	public boolean isValid(UserRegistrationDto userRegistrationDto, ConstraintValidatorContext context) {
-		return userService.isAnExistingMail(userRegistrationDto.getMail()) == false;
+		return !userService.isAnExistingMail(userRegistrationDto.getMail());
 	}
 
 }

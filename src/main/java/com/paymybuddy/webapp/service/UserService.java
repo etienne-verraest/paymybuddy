@@ -163,7 +163,6 @@ public class UserService implements UserDetailsService {
 			double totalBalance = balance + amountToAdd;
 			user.setBalance(totalBalance);
 			userRepository.save(user);
-			log.info("New user balance : {} € ", totalBalance);
 			return true;
 		}
 		throw new UserServiceException("User was not found");
@@ -186,7 +185,6 @@ public class UserService implements UserDetailsService {
 				double totalBalance = balance - amountToSubtract;
 				user.setBalance(totalBalance);
 				userRepository.save(user);
-				log.info("New user balance : {} € ", totalBalance);
 				return true;
 			}
 			throw new UserServiceException("Amount to deposit is more than your account balance");

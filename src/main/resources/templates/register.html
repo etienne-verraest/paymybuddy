@@ -60,11 +60,13 @@
                         
                         <button type="submit" class="btn buddy-btn-green">Register</button> <a class="p-1" href="/login">Already have an account ?</a>
                         
-                        <div th:errors="*{global}" class="mt-2 alert alert-danger" role="alert">
+                        <div th:errors="*{global}" class="mt-2 alert alert-danger alert-dismissible fade show" role="alert">
                             A simple danger alert—check it out!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </form>
                 </div>
             </div>
+          </div>
     </body>
 </html>

@@ -92,7 +92,7 @@
                                 <label for="buddyMail" class="form-label fw-bold">E-mail address of your buddy :</label>
                                 <input th:field="*{buddyMail}" type="email" class="form-control" id="buddyMail" name="buddyMail">
                                 <small th:errors="*{buddyMail}" class="text-danger">Mail address must not be empty</small>
-                                <br><input type="submit"class="btn buddy-btn-green mt-1" value="Add friend">
+                                <br><input type="submit" class="btn buddy-btn-green mt-1" value="Add friend">
                             </form>
                             <div th:if="${param.success}" class="alert alert-info alert-dismissible fade show" role="alert">
                             	Connection succesfully added

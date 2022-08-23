@@ -72,7 +72,7 @@ public class ConnectionsController {
 			} else {
 				redirect.setUrl(viewName + "?remove_connection_error");
 			}
-			return new ModelAndView(redirect, new HashMap<>());
+			return new ModelAndView(redirect, model);
 		}
 
 		return new ModelAndView(viewName, model);
@@ -97,28 +97,34 @@ public class ConnectionsController {
 			return new ModelAndView(viewName);
 		}
 
-		// Get current logged user
+		// Get current logged user and related information
 		User user = userService.getLoggedUser();
-
-		// Get buddies of logged user
 		Map<String, Object> model = new HashMap<>();
 		List<Integer> identifiers = connectionService.getUserBuddiesId(user.getId());
 		List<User> connections = userService.getListOfUserFromIdentifiers(identifiers);
-		model.put("connectionsList", connections); // Show user's connections
+		model.put("connectionsList", connections);
+		model.put("hasConnections", !connections.isEmpty());
+		model.put("firstName", user.getFirstName());
+		model.put("lastName", user.getLastName());
+		model.put("balance", user.getBalance());
 
-		// Try to make a connection with a user and catch exceptions if there is a
-		// logical error
+		// The connection service tries to make the connection with the user
+		// If there are no errors, then the connection is added
+		// Otherwise an error message is displayed
+		RedirectView redirect = new RedirectView();
 		try {
-			boolean connectionIsMade = connectionService.makeConnections(user.getId(), connectionAddDto.getBuddyMail());
 
-			RedirectView redirect = new RedirectView();
+			boolean connectionIsMade = connectionService.makeConnections(user.getId(), connectionAddDto.getBuddyMail());
 			if (connectionIsMade) {
 				redirect.setUrl(viewName + "?success");
 				return new ModelAndView(redirect, model);
 			}
+
 		} catch (ConnectionServiceException error) {
-			bindingResult.rejectValue("buddyMail", "", error.getMessage());
+
+			bindingResult.rejectValue("buddyMail", " ", error.getMessage());
 			return new ModelAndView(viewName, model);
+
 		}
 
 		return new ModelAndView(viewName, model);

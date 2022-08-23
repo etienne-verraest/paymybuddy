@@ -187,7 +187,7 @@ public class UserService implements UserDetailsService {
 				userRepository.save(user);
 				return true;
 			}
-			throw new UserServiceException("Amount to deposit is more than your account balance");
+			throw new UserServiceException("Amount to deposit is greater than your current account balance");
 		}
 		throw new UserServiceException("User was not found");
 	}

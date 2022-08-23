@@ -98,7 +98,7 @@
 
                     <!-- Withdraw money -->
                     <div th:if="${accountIsSet}" class="mt-2 card">
-                        <h5 class="card-header">Withdraw money</h5>
+                        <h5 class="card-header">Withdraw money from bank account</h5>
                         <div class="card-body">
                             <form method="post" th:action="@{/bank-withdraw}" th:object="${bankAccountWithdrawDto}">
                                 <label for="withdrawMoney" class="form-label fw-bold">Amount to withdraw (€) :</label>
@@ -106,19 +106,19 @@
                                 <small th:errors="*{withdrawMoney}" class="text-danger">Minimum amount is 1€.</small>
                                 <input type="submit"class="btn buddy-btn-green mt-1" value="Withdraw money">
                             </form>
-                            <div th:if="${param.withdraw_success}" class="alert alert-info alert-dismissible fade show " role="alert">Successfully withdrew money from bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>                          
+                            <div th:if="${param.withdraw_success}" class="alert alert-info alert-dismissible fade show" role="alert">Successfully withdrew money from bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>                          
                         </div>
                     </div>
                 
                     <!-- Deposit money -->
                     <div th:if="${accountIsSet}" class="mt-2 card">
-                        <h5 class="card-header">Deposit money</h5>
+                        <h5 class="card-header">Deposit money to bank account</h5>
                         <div class="card-body">
                             <form method="post" th:action="@{/bank-deposit}" th:object="${bankAccountDepositDto}">
                                 <label for="depositMoney" class="form-label fw-bold">Amount to deposit (€) :</label>
                                 <input th:field="*{depositMoney}" type="number" class="form-control" id="depositMoney" name="depositMoney" min="1" th:max="${balance}" placeholder="1.0" step="0.01">
-                                <small th:errors="*{depositMoney}" class="text-danger">Minimum amount is 1€.</small>
                                 <input type="submit"class="btn buddy-btn-green mt-1"  value="Deposit money">
+                                <br><small th:errors="*{depositMoney}" class="text-danger">Minimum amount is 1€.</small>
                             </form>
                             <div th:if="${param.deposit_success}" class="alert alert-info alert-dismissible fade show" role="alert">Successfully deposited money to bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>                          
                         </div>

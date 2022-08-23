@@ -44,10 +44,29 @@ public class BankAccountController {
 	private static String viewName = ViewNameConstants.BANK_VIEW_NAME;
 
 	/**
-	 * This GET request show the bank account view
-	 * From there the user can add his bank account, and withdraw money
+	 * Local method that creates a blank form (BankAccountAddDto) if the user has not set his information
+	 * Otherwise, we populate the form with his information
 	 *
-	 * @return										bank.html
+	 * @param userId									The ID of the user
+	 * @return											BankAccountAddDto empty or filled
+	 */
+	private BankAccountAddDto getBankForm(Integer userId) {
+		BankAccountAddDto bankAccountAddDto;
+		BankAccount bankAccount = bankAccountService.getBankAccountInformation(userId);
+		if (bankAccount != null) {
+			bankAccountAddDto = modelMapper.map(bankAccount, BankAccountAddDto.class);
+		} else {
+			bankAccountAddDto = new BankAccountAddDto();
+		}
+		return bankAccountAddDto;
+	}
+
+	/**
+	 * This GET request show the bank account view
+	 * From there the user can add his bank account, withdraw from his bank account and transfer
+	 * money to it
+	 *
+	 * @return											bank.html
 	 * @throws BankAccountServiceException
 	 */
 	@GetMapping("/bank")
@@ -57,18 +76,8 @@ public class BankAccountController {
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
 
-		// Populate the form with bank information if they were already filled
-		// Otherwise, the command object has no values
-		BankAccountAddDto bankAccountAddDto;
-		BankAccount bankAccount = bankAccountService.getBankAccountInformation(userId);
-		if (bankAccount != null) {
-			bankAccountAddDto = modelMapper.map(bankAccount, BankAccountAddDto.class);
-		} else {
-			bankAccountAddDto = new BankAccountAddDto();
-		}
-
 		Map<String, Object> model = new HashMap<>();
-		model.put("bankAccountAddDto", bankAccountAddDto);
+		model.put("bankAccountAddDto", getBankForm(userId));
 		model.put("accountIsSet", bankAccountService.checkIfUserBankAccountExists(userId));
 		model.put("bankAccountWithdrawDto", new BankAccountWithdrawDto());
 		model.put("bankAccountDepositDto", new BankAccountDepositDto());
@@ -95,14 +104,12 @@ public class BankAccountController {
 	/**
 	 * This POST request handles the creation or update of a bank account
 	 *
-	 * @param bankAccountAddDto						The command object that contains the values
-	 * @param bindingResult
-	 * @return										bank.html
-	 * @throws										BankAccountServiceException
-	 *
+	 * @param bankAccountAddDto							BankAccountAddDto : DTO that handles the form
+	 * @return											bank.html	 *
 	 */
 	@PostMapping("/bank")
-	public ModelAndView submitBankForm(@Valid BankAccountAddDto bankAccountAddDto, BindingResult bindingResult) {
+	public ModelAndView submitBankForm(@Valid BankAccountAddDto bankAccountAddDto, BindingResult bindingResult)
+			throws BankAccountServiceException {
 
 		// Get current logged user
 		User user = userService.getLoggedUser();
@@ -113,40 +120,43 @@ public class BankAccountController {
 			return new ModelAndView(viewName);
 		}
 		Map<String, Object> model = new HashMap<>();
-		try {
-			RedirectView redirect = new RedirectView();
+		RedirectView redirect = new RedirectView();
 
-			// If the informations are already populated, we do an update operation
-			if (bankAccountService.checkIfUserBankAccountExists(userId)) {
-				bankAccountService.updateBankAccountInformation(userId, bankAccountAddDto);
-				redirect.setUrl(viewName + "?update_success");
-			} //
-			else // Otherwise, if there are no informations, we do a creation operation
-			{
-				BankAccount bankAccount = new BankAccount(user, bankAccountAddDto.getBankName(),
-						bankAccountAddDto.getRib(), bankAccountAddDto.getIban());
-				bankAccountService.saveBankAccountInformation(bankAccount);
-				redirect.setUrl(viewName + "?success");
-			}
-			return new ModelAndView(redirect, model);
-
-		} catch (BankAccountServiceException error) {
-			log.info("{}", error.getMessage());
-			return new ModelAndView(viewName, model);
+		// If the informations are already populated, we do an update operation
+		if (bankAccountService.checkIfUserBankAccountExists(userId)) {
+			bankAccountService.updateBankAccountInformation(userId, bankAccountAddDto);
+			redirect.setUrl(viewName + "?update_success");
+		} //
+		else // Otherwise, if there are no informations, we do a creation operation
+		{
+			BankAccount bankAccount = new BankAccount(user, bankAccountAddDto.getBankName(), bankAccountAddDto.getRib(),
+					bankAccountAddDto.getIban());
+			bankAccountService.saveBankAccountInformation(bankAccount);
+			redirect.setUrl(viewName + "?success");
 		}
+		return new ModelAndView(redirect, model);
+
 	}
 
+	/**
+	 * Withdraw money from bank account
+	 *
+	 * @param bankAccountWithdrawDto					BankAccountWithdrawDto : DTO that handles the withdrawal
+	 * @return
+	 * @throws UserServiceException
+	 */
 	@PostMapping("/bank-withdraw")
 	public ModelAndView submitBankWithdrawForm(@Valid BankAccountWithdrawDto bankAccountWithdrawDto,
 			BindingResult bindingResult) throws UserServiceException {
+
+		if (bindingResult.hasErrors()) {
+			return new ModelAndView(viewName);
+		}
 
 		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
 
-		if (bindingResult.hasErrors()) {
-			return new ModelAndView(viewName);
-		}
 		Map<String, Object> model = new HashMap<>();
 
 		// Update user balance
@@ -159,30 +169,47 @@ public class BankAccountController {
 		return new ModelAndView(redirect, model);
 	}
 
+	/**
+	 * Deposit money to the bank account
+	 *
+	 *
+	 * @param bankAccountDepositDto						BankAccountDepositDto : DTO that handles the deposit
+	 * @param bindingResult
+	 * @return
+	 * @throws UserServiceException						- Amount to transfer is higher than current balance
+	 */
 	@PostMapping("/bank-deposit")
 	public ModelAndView submitBankDepositForm(@Valid BankAccountDepositDto bankAccountDepositDto,
-			BindingResult bindingResult) {
-
-		// Get current logged user
-		User user = userService.getLoggedUser();
-		Integer userId = user.getId();
-		Map<String, Object> model = new HashMap<>();
+			BindingResult bindingResult) throws UserServiceException {
 
 		if (bindingResult.hasErrors()) {
 			return new ModelAndView(viewName);
 		}
 
-		RedirectView redirect = new RedirectView();
+		// Get current logged user
+		User user = userService.getLoggedUser();
+		Integer userId = user.getId();
 
+		// Initialize the model for the other parts of the template
+		Map<String, Object> model = new HashMap<>();
+		model.put("bankAccountAddDto", getBankForm(userId));
+		model.put("accountIsSet", bankAccountService.checkIfUserBankAccountExists(userId));
+		model.put("balance", user.getBalance());
+		model.put("firstName", user.getFirstName());
+		model.put("lastName", user.getLastName());
+		model.put("bankAccountWithdrawDto", new BankAccountWithdrawDto());
+
+		// Try to deposit money on the bank account
 		try {
 			double money = bankAccountDepositDto.getDepositMoney();
-			userService.depositMoneyAndUpdateBalance(userId, money);
-			redirect.setUrl(viewName + "?deposit_success");
+			boolean moneySent = userService.depositMoneyAndUpdateBalance(userId, money);
+			if (moneySent) {
+				return new ModelAndView(viewName + "?success", model);
+			}
 		} catch (UserServiceException error) {
 			bindingResult.rejectValue("depositMoney", "", error.getMessage());
 			return new ModelAndView(viewName, model);
 		}
-
-		return new ModelAndView(redirect, model);
+		return new ModelAndView(viewName, model);
 	}
 }

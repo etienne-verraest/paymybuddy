@@ -1,5 +1,8 @@
 package com.paymybuddy.webapp.config.constants;
 
+import lombok.Generated;
+
+@Generated
 public class ViewNameConstants {
 
 	public static final String REGISTRATION_VIEW_NAME = "register";

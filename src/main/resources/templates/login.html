@@ -22,18 +22,21 @@
                 <div class="col-6 offset-3 p-3 border bg-light">                   
                     <!-- Error and success messages -->
                     <!-- Succesfull registration -->
-                    <div th:if="${param.registered}" class="alert alert-success" role="alert">
+                    <div th:if="${param.registered}" class="alert alert-success alert-dismissible fade show" role="alert">
                         Succesfully registered, you may now login
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     
                     <!-- Error while login -->
-                    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
                         Invalid credentials
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
 
                     <!-- Logout confirmation -->
-                    <div th:if="${param.logout}" class="alert alert-info" role="alert">
+                    <div th:if="${param.logout}" class="alert alert-info alert-dismissible fade show" role="alert">
                         You have been logged out
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
 
                     <!-- Form content -->

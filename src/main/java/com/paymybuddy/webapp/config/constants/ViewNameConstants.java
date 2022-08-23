@@ -14,4 +14,6 @@ public class ViewNameConstants {
 	public static final String CONNECTIONS_VIEW_NAME = "connections";
 
 	public static final String BANK_VIEW_NAME = "bank";
+
+	public static final String TRANSACTION_VIEW_NAME = "transaction";
 }

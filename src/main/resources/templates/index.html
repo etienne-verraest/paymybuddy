@@ -10,5 +10,19 @@
 		<a href="/bank"> Add your bank account </a><br>
 		<a href="/connections"> Add a buddy </a><br>
 		<a href="/logout"> Log out </a>	
+	
+		<div th:if="${hasConnections}">
+			<form method="post" th:action="@{/start-transaction}" th:object="${startTransactionDto}">
+			<label for="buddyId">Choose a connection :</label>
+			<select th:field="*{buddyId}" name="buddyId" id="buddyId">
+			    <option value="">--Choose a buddy--</option>
+			    <option th:each="connection : ${connectionsList}" th:value="${connection.id}" th:text="${connection.firstName} + ' ' + ${connection.lastName}">UserNames</option>
+			</select>
+			
+			<label for="amount">Amount to transfer :</label>
+            <input th:field="*{amount}"  type="number" id="amount" name="amount" min="0.1" th:max="${balance}" placeholder="1.00" step="0.1">
+            <input type="submit" value="Transfer money">
+			</form>
+		</div>
 	</body>
 </html>

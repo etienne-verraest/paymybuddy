@@ -1,5 +1,7 @@
 package com.paymybuddy.webapp.model;
 
+import java.time.Instant;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,5 +37,8 @@ public class Transaction {
 
 	@Column
 	private Double fee;
+
+	@Column
+	private Instant date;
 
 }

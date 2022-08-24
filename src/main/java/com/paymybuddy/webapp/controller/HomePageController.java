@@ -57,12 +57,14 @@ public class HomePageController {
 
 		// Add some information in the model
 		Map<String, Object> model = new HashMap<>();
+		model.put("userId", user.getId());
 		model.put("firstName", user.getFirstName());
 		model.put("lastName", user.getLastName());
 		model.put("balance", user.getBalance());
 		model.put("connectionsList", connections);
 		model.put("hasConnections", !connections.isEmpty());
 		model.put("startTransactionDto", new StartTransactionDto());
+		model.put("userService", userService);
 
 		List<Transaction> transactions;
 		if (pageId == null) {
@@ -71,7 +73,8 @@ public class HomePageController {
 			transactions = transactionService.getTransactionsByPage(userId, 5, pageId);
 		}
 
-		model.put("hasTransactions", !transactions.isEmpty());
+		model.put("hasTransactions", transactionService.getNumberOfTransactionsForUserId(userId) > 0);
+		model.put("numberOfTransactions", transactionService.getNumberOfTransactionsForUserId(userId));
 		model.put("transactions", transactions);
 
 		return new ModelAndView(viewName, model);

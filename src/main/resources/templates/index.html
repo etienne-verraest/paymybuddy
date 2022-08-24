@@ -25,24 +25,41 @@
 			</form>
 		</div>
 		
-		<table th:if="${hasTransactions}">
-          <thead>
-              <tr>
-                <th>From/To</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>DATE</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="t : ${transactions}">
-                <td th:text="${t.senderId}">Sender Id</td>
-                <td th:text="${t.description}">Description transaction</td>
-                <td th:text="${t.amount} + '€'">Amount €</td>
-                <td th:text="${t.date}">Date </td>
-              </tr>
-            </tbody>
-          </table>
-        <!-- End of connections table -->
+		<!-- Start of transactions div -->
+		<div th:if="${hasTransactions}">
+			<table>
+          		<thead>
+	              <tr>
+	                <th></th>
+	                <th>Description</th>
+	                <th>Amount</th>
+	                <th>Date</th>
+	              </tr>
+            	</thead>
+            	
+            	<tbody>
+					<!-- Loop for each transactions   -->
+					<tr th:each="t : ${transactions}">
+                
+		          		<!-- From/To formatting depend on current user logged -->
+		                <td th:if="${userId} eq ${t.senderId}" th:text="'To : ' + ${userService.returnNameFromId({t.recipientId})}">To : firstName lastName</td>
+		                <td th:if="${userId} neq ${t.senderId}" th:text="'From : ' + ${userService.returnNameFromId({t.senderId})}">From : firstName lastName</td>
+	                
+	                	<!-- Transaction description -->
+	                	<td th:text="${t.description}">Transaction description</td>
+	                
+	                	<!-- Amount formatting depending on who is the sender  -->
+	                	<td th:if="${userId} eq ${t.senderId}" th:text="'-' + ${t.amount} + '€'">-Amount €</td>
+	                	<td th:if="${userId} neq ${t.senderId}" th:text="${t.amount} + '€'">Amount €</td>
+	                
+	                	<!-- Transaction date -->
+	                	<td th:text="${t.date}">Date </td>
+	                	
+              		</tr>
+            	</tbody>   
+          	</table> <!-- End of connections table -->
+          <br><span th:text="'Number of transactions : ' + ${numberOfTransactions}">Number of transactions : numberOfTransactions</span>
+        </div> <!-- End of div -->
+        
 	</body>
 </html>

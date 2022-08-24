@@ -27,4 +27,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
 	@Query(value = "SELECT * FROM transaction t WHERE t.sender_id = :userId OR t.recipient_id = :userId ORDER BY t.date DESC LIMIT 5 OFFSET :offset", nativeQuery = true)
 	List<Transaction> getUserTransactions(@Param("userId") Integer userId, @Param("offset") Integer offset);
+
+	@Query(value = "SELECT COUNT(*) FROM transaction t WHERE t.sender_id = :userId OR t.recipient_id = :userId", nativeQuery = true)
+	Integer getNumberOfTransactions(@Param("userId") Integer userId);
 }

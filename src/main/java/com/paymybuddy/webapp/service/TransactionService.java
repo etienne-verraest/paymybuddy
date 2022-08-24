@@ -91,4 +91,8 @@ public class TransactionService {
 	public List<Transaction> getTransactionsByPage(Integer userId, Integer numberOfItemsPerPage, Integer pageId) {
 		return transactionRepository.getUserTransactions(userId, numberOfItemsPerPage * pageId);
 	}
+
+	public Integer getNumberOfTransactionsForUserId(Integer userId) {
+		return transactionRepository.getNumberOfTransactions(userId);
+	}
 }

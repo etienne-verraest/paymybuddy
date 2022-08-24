@@ -191,4 +191,9 @@ public class UserService implements UserDetailsService {
 		}
 		throw new UserServiceException("User was not found");
 	}
+
+	public String returnNameFromId(Integer userId) {
+		User user = userRepository.findUserById(userId);
+		return String.format("%s %s", user.getFirstName(), user.getLastName());
+	}
 }

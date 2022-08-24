@@ -25,6 +25,7 @@
 			<!--  Description -->
 			<br><label for="description">Description <small>(150 characters maximum)</small> : </label>
 			<input th:field="*{description}" type="text" id="description" name="description" minlength="1" maxlength="150" size="50">
+			<small th:errors="*{description}">Please set a description</small>
 			
 			<!-- Submit button -->
 			<br><input type="submit" value="Confirm transaction">

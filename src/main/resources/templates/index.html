@@ -15,8 +15,8 @@
 			<form method="post" th:action="@{/start-transaction}" th:object="${startTransactionDto}">
 			<label for="buddyId">Choose a connection :</label>
 			<select th:field="*{buddyId}" name="buddyId" id="buddyId">
-			    <option value="">--Choose a buddy--</option>
-			    <option th:each="connection : ${connectionsList}" th:value="${connection.id}" th:text="${connection.firstName} + ' ' + ${connection.lastName}">UserNames</option>
+			    <option value="">Choose a buddy</option>
+			    <option th:each="connection : ${connectionsList}" th:value="${connection.id}" th:text="${connection.firstName} + ' ' + ${connection.lastName}">FirstName LastName</option>
 			</select>
 			
 			<label for="amount">Amount to transfer :</label>

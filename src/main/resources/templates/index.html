@@ -58,7 +58,15 @@
               		</tr>
             	</tbody>   
           	</table> <!-- End of connections table -->
-          <br><span th:text="'Number of transactions : ' + ${numberOfTransactions}">Number of transactions : numberOfTransactions</span>
+          	
+          	<br>
+          	<span th:text="'Number of transactions : ' + ${numberOfTransactions}">Number of transactions : numberOfTransactions</span>
+         	
+         	<br>
+      		<th:block th:each="i: ${#numbers.sequence(1, numberOfPages+1)}">
+         		<a th:text="${i}" th:href="@{/?(pageId=${i})}">N° of page</a>
+         	</th:block>
+        
         </div> <!-- End of div -->
         
 	</body>

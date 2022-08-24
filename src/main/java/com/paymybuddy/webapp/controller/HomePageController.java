@@ -75,7 +75,6 @@ public class HomePageController {
 		// The buddy Id and the amount of money to send
 		redirectAttributes.addFlashAttribute("buddyId", startTransactionDto.getBuddyId());
 		redirectAttributes.addFlashAttribute("amount", startTransactionDto.getAmount());
-
 		return new RedirectView("/transaction/make", true);
 	}
 

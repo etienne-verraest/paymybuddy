@@ -6,6 +6,28 @@
 	</head>
 
 	<body>
-		<span th:text="${buddyId} + ' ' + ${amount}">Hello [firstName] [lastName]</span><br>
+		<form method="post" th:action="@{/transaction-process}" th:object="${transactionDto}">
+			<!--  Buddy Id -->
+			<input type="hidden" id="recipientId" name="recipientId" th:value="${buddyId}">
+			
+			<!--  Buddy First name and last name -->
+			<br><span th:text="'To : ' + ${buddyFirstName} + ' ' + ${buddyLastName}">To : [buddyFirstName] [buddyLastName]</span>
+			
+			<!--  Amount to transfer -->
+			<br><span th:text="'Amount to transfer : ' + ${amountToTransfer} + ' €' ">Amount : [amount] € </span>
+			<input type="hidden" id="amount" name="amount" th:value="${amountToTransfer}">
+			
+			<!-- Fee  -->
+			<br><span th:text="'Fee : ' + ${fee} + ' € '">Fee : [fee] € </span>
+			
+			<br><span th:text="'Total : ' + ${totalAmount} + ' € '">Total : [amount + fee] € </span>
+			
+			<!--  Description -->
+			<br><label for="description">Description <small>(150 characters maximum)</small> : </label>
+			<input th:field="*{description}" type="text" id="description" name="description" minlength="1" maxlength="150" size="50">
+			
+			<!-- Submit button -->
+			<br><input type="submit" value="Confirm transaction">
+		</form>
 	</body>
 </html>

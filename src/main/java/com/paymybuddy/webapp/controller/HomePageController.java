@@ -68,8 +68,8 @@ public class HomePageController {
 	 * The form fields are set with the {@{MakeTransferDto.class}}
 	 */
 	@PostMapping("/start-transaction")
-	public RedirectView submitBankTransferPostRequest(HttpServletRequest request,
-			@Valid StartTransactionDto startTransactionDto, RedirectAttributes redirectAttributes) {
+	public RedirectView startTransaction(HttpServletRequest request, @Valid StartTransactionDto startTransactionDto,
+			RedirectAttributes redirectAttributes) {
 
 		// The attributes that we want to pass to the transaction controller :
 		// The buddy Id and the amount of money to send

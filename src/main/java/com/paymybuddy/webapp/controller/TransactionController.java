@@ -47,9 +47,10 @@ public class TransactionController {
 	 * Show the transaction page, with values taken from the home page
 	 * From this page, the user can confirm or cancel the payment
 	 * He can set a description for the transaction
+	 * @throws TransactionServiceException
 	 */
 	@GetMapping("/transaction/make")
-	public ModelAndView getSuccess(HttpServletRequest request) {
+	public ModelAndView getTransactionForm(HttpServletRequest request) throws TransactionServiceException {
 
 		// Getting user's values
 		User user = userService.getLoggedUser();
@@ -88,21 +89,32 @@ public class TransactionController {
 	 *
 	 * @param transactionDto					TransactionDto used for validation
 	 * @return
-	 * @throws Exception
+	 * @throws TransactionServiceException
 	 */
 	@PostMapping("/transaction-process")
 	public ModelAndView submitBankWithdrawForm(HttpServletRequest request, @Valid TransactionDto transactionDto,
 			BindingResult bindingResult) throws TransactionServiceException {
 
-		if (bindingResult.hasErrors()) {
-			return new ModelAndView(viewName);
-		}
-
-		// Getting logged user information
+		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
 
+		// We don't want to lose the model if there are validations errors
 		Map<String, Object> model = new HashMap<>();
+		if (bindingResult.hasErrors()) {
+			model.put("senderId", userId);
+			model.put("buddyId", transactionDto.getRecipientId());
+			model.put("amountToTransfer", transactionDto.getAmount());
+			model.put("fee", transactionService.feeCalculator(transactionDto.getAmount()));
+			model.put("totalAmount",
+					transactionDto.getAmount() + transactionService.feeCalculator(transactionDto.getAmount()));
+
+			User buddy = userService.findUserById(transactionDto.getRecipientId());
+			model.put("buddyFirstName", buddy.getFirstName());
+			model.put("buddyLastName", buddy.getLastName());
+
+			return new ModelAndView(viewName, model);
+		}
 
 		// Settings programmatically fields to avoid field manipulation from the user
 		transactionDto.setSenderId(userId);
@@ -117,11 +129,11 @@ public class TransactionController {
 		// Processing the transaction
 		transactionService.processTransaction(transaction);
 
-		// Redirecting the user if everything went well
+		// Redirecting the user on the home page if everything went well
 		RedirectView redirect = new RedirectView();
-		redirect.setUrl(viewName + "?success");
+		redirect.setUrl("/?transaction_success");
 
-		return new ModelAndView(redirect, model);
+		return new ModelAndView(redirect, new HashMap<>());
 	}
 
 }

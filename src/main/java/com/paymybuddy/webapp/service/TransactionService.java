@@ -1,5 +1,8 @@
 package com.paymybuddy.webapp.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +27,48 @@ public class TransactionService {
 	 * @throws TransactionServiceException				- If transaction object is null
 	 */
 	public boolean processTransaction(Transaction transaction) throws TransactionServiceException {
+
+		// TODO : Check if user exists
+		// TODO : Check if users are connected
 		if (transaction != null) {
-			transactionRepository.save(transaction);
-			return true;
+			Integer senderId = transaction.getSenderId();
+			Integer recipientId = transaction.getRecipientId();
+
+			if (senderId != recipientId) {
+				// Saving the transaction in the repository
+				transactionRepository.save(transaction);
+
+				// Updating user balances
+				updateSenderBalance(transaction.getSenderId(), transaction.getAmount() + transaction.getFee());
+				updateRecipientBalance(transaction.getRecipientId(), transaction.getAmount());
+				return true;
+			}
+
+			throw new TransactionServiceException("User is trying to send money to himself");
 		}
 		throw new TransactionServiceException("There was a unexpected error while trying to make the transaction");
+	}
+
+	/**
+	 * Update the sender balance with the amount with fee
+	 * The fee is intended for Pay My Buddy Company
+	 *
+	 * @param senderId									Integer : the sender Id
+	 * @param amountWithFee								Double : The amount with fee
+	 */
+	private void updateSenderBalance(Integer senderId, double amountWithFee) {
+		transactionRepository.updateSenderBalance(senderId, amountWithFee);
+	}
+
+	/**
+	 * Update the recipient balance with the amount received
+	 * The fee is not intended for the recipient but for Pay My Buddy company
+	 *
+	 * @param recipientId								Integer : the recipient Id
+	 * @param amountWithoutFee							Double : The amount without fee
+	 */
+	private void updateRecipientBalance(Integer recipientId, double amountWithoutFee) {
+		transactionRepository.updaterRecipientBalance(recipientId, amountWithoutFee);
 	}
 
 	/**
@@ -39,10 +79,12 @@ public class TransactionService {
 	 * @throws TransactionServiceException				- If the amount is <= 0
 	 */
 	public double feeCalculator(double amount) throws TransactionServiceException {
-		if (amount <= 0) {
-			return (0.05 / amount) * 100;
+		if (amount > 0) {
+			// Calculate the fee amount
+			amount = (amount * 0.05) / 100;
+			// Set precision to 2 using BigDecimal setScale method
+			return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP).doubleValue();
 		}
-
 		throw new TransactionServiceException("The amount entered is incorrect");
 	}
 

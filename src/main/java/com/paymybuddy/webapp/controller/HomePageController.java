@@ -11,14 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.paymybuddy.webapp.config.constants.ViewNameConstants;
+import com.paymybuddy.webapp.model.Transaction;
 import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.StartTransactionDto;
 import com.paymybuddy.webapp.service.ConnectionService;
+import com.paymybuddy.webapp.service.TransactionService;
 import com.paymybuddy.webapp.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,17 +38,21 @@ public class HomePageController {
 	@Autowired
 	private ConnectionService connectionService;
 
+	@Autowired
+	private TransactionService transactionService;
+
 	/**
 	 * This is the home page controller, from there you can start a transaction with
 	 * a connection (a buddy).
 	 * Also, you can see received and sent transactions (if those exist)
 	 */
 	@GetMapping("/")
-	public ModelAndView showUserPage() {
+	public ModelAndView showUserPage(@RequestParam(required = false) Integer pageId) {
 
 		// Get current logged user
 		User user = userService.getLoggedUser();
-		List<Integer> identifiers = connectionService.getUserBuddiesId(user.getId());
+		Integer userId = user.getId();
+		List<Integer> identifiers = connectionService.getUserBuddiesId(userId);
 		List<User> connections = userService.getListOfUserFromIdentifiers(identifiers);
 
 		// Add some information in the model
@@ -56,6 +63,16 @@ public class HomePageController {
 		model.put("connectionsList", connections);
 		model.put("hasConnections", !connections.isEmpty());
 		model.put("startTransactionDto", new StartTransactionDto());
+
+		List<Transaction> transactions;
+		if (pageId == null) {
+			transactions = transactionService.getTransactionsByPage(userId, 5, 0);
+		} else {
+			transactions = transactionService.getTransactionsByPage(userId, 5, pageId);
+		}
+
+		model.put("hasTransactions", !transactions.isEmpty());
+		model.put("transactions", transactions);
 
 		return new ModelAndView(viewName, model);
 	}

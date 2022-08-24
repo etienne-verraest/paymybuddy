@@ -25,9 +25,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	@Query(value = "UPDATE user u SET u.balance = (u.balance + :amount) WHERE u.id = :recipientId", nativeQuery = true)
 	void updateRecipientBalance(@Param("recipientId") Integer recipientId, @Param("amount") Double amountWithoutFee);
 
-	@Query(value = "SELECT * FROM transaction t WHERE t.sender_id = :userId OR t.recipient_id = :userId ORDER BY t.date DESC LIMIT 5 OFFSET :offset", nativeQuery = true)
-	List<Transaction> getUserTransactions(@Param("userId") Integer userId, @Param("offset") Integer offset);
+	@Query(value = "SELECT * FROM transaction t WHERE t.sender_id = :userId OR t.recipient_id = :userId ORDER BY t.date DESC LIMIT :itemsPerPages OFFSET :offset", nativeQuery = true)
+	List<Transaction> getUserTransactionsPages(@Param("userId") Integer userId,
+			@Param("itemsPerPages") Integer itemsPerPages, @Param("offset") Integer offset);
+
+	@Query(value = "SELECT * FROM transaction t WHERE t.sender_id = :userId OR t.recipient_id = :userId ORDER BY t.date DESC LIMIT :itemsPerPages", nativeQuery = true)
+	List<Transaction> getUserTransactionsFirstPage(@Param("userId") Integer userId,
+			@Param("itemsPerPages") Integer itemsPerPages);
 
 	@Query(value = "SELECT COUNT(*) FROM transaction t WHERE t.sender_id = :userId OR t.recipient_id = :userId", nativeQuery = true)
-	Integer getNumberOfTransactions(@Param("userId") Integer userId);
+	Integer getNumberOfTransactionsForUserId(@Param("userId") Integer userId);
 }

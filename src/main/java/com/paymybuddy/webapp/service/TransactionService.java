@@ -28,8 +28,6 @@ public class TransactionService {
 	 * @throws TransactionServiceException				- If transaction object is null
 	 */
 	public boolean processTransaction(Transaction transaction) throws TransactionServiceException {
-
-		// TODO : Check if user exists and if users are connected
 		if (transaction != null) {
 			Integer senderId = transaction.getSenderId();
 			Integer recipientId = transaction.getRecipientId();
@@ -73,6 +71,7 @@ public class TransactionService {
 
 	/**
 	 * Calculate the 0.05% fee for each transaction
+	 * Precision is set to 0.000, for low amounts such as 5.00 euros
 	 *
 	 * @param amount									The amount from which we calculate the fee
 	 * @return											Double : the fee amount
@@ -88,11 +87,43 @@ public class TransactionService {
 		throw new TransactionServiceException("The amount entered is incorrect");
 	}
 
+	/**
+	 * The offset equation is numberOfItemsPerPage * (pageId - 1).
+	 * The presence of the minus one is very important, otherwise the calculation for the page will be wrong
+	 * 		Example for p = 2 and n = 5, the offset would be 10
+	 * 		Or at p = 1, the offset is 0
+	 * 		Thus, there will be missing datas between page 1 and 2
+	 * 		Subtracting -1 (from p = 2) will set the offset to 5 and not 10, avoiding the data loss
+	 *
+	 * @param userId									Integer : the user ID we want to fetch the pages
+	 * @param numberOfItemsPerPage						Integer : Items per page displayed
+	 * @param pageId									Integer : The page ID the user is on
+	 * @return											p Page of transactions list
+	 */
 	public List<Transaction> getTransactionsByPage(Integer userId, Integer numberOfItemsPerPage, Integer pageId) {
-		return transactionRepository.getUserTransactions(userId, numberOfItemsPerPage * pageId);
+		return transactionRepository.getUserTransactionsPages(userId, numberOfItemsPerPage,
+				numberOfItemsPerPage * (pageId - 1));
 	}
 
+	/**
+	 * Fetching the first page to display for the user.
+	 * The first page doesn't fit in the equation for the page calculator
+	 *
+	 * @param userId									Integer : the user ID we want to fetch the first page
+	 * @param numberOfItemsPerPage						Integer : Items per page displayed
+	 * @return											First page of transactions list
+	 */
+	public List<Transaction> getTransactionsFirstPage(Integer userId, Integer numberOfItemsPerPage) {
+		return transactionRepository.getUserTransactionsFirstPage(userId, numberOfItemsPerPage);
+	}
+
+	/**
+	 * Get the total of transactions for a given user
+	 *
+	 * @param userId									Integer : The user ID we want to fetch the value
+	 * @return											Integer : A number of transactions
+	 */
 	public Integer getNumberOfTransactionsForUserId(Integer userId) {
-		return transactionRepository.getNumberOfTransactions(userId);
+		return transactionRepository.getNumberOfTransactionsForUserId(userId);
 	}
 }

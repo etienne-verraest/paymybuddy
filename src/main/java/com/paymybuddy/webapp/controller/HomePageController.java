@@ -49,6 +49,8 @@ public class HomePageController {
 	@GetMapping("/")
 	public ModelAndView showUserPage(@RequestParam(required = false) Integer pageId) {
 
+		final Integer itemsPerPages = 4;
+
 		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
@@ -57,25 +59,37 @@ public class HomePageController {
 
 		// Add some information in the model
 		Map<String, Object> model = new HashMap<>();
+
+		// Logged user related datas
 		model.put("userId", user.getId());
 		model.put("firstName", user.getFirstName());
 		model.put("lastName", user.getLastName());
 		model.put("balance", user.getBalance());
-		model.put("connectionsList", connections);
-		model.put("hasConnections", !connections.isEmpty());
-		model.put("startTransactionDto", new StartTransactionDto());
+
+		// The userService is used in the index.html page to transform raw datas
 		model.put("userService", userService);
 
+		// Connections related datas
+		model.put("connectionsList", connections);
+		model.put("hasConnections", !connections.isEmpty());
+
+		// Transactions related datas
+		model.put("startTransactionDto", new StartTransactionDto());
+
+		// Calculate the number of pages to show for the user
 		List<Transaction> transactions;
-		if (pageId == null) {
-			transactions = transactionService.getTransactionsByPage(userId, 5, 0);
+		if (pageId == null || pageId == 1) {
+			transactions = transactionService.getTransactionsFirstPage(userId, itemsPerPages);
 		} else {
-			transactions = transactionService.getTransactionsByPage(userId, 5, pageId);
+			transactions = transactionService.getTransactionsByPage(userId, itemsPerPages, pageId);
 		}
 
-		model.put("hasTransactions", transactionService.getNumberOfTransactionsForUserId(userId) > 0);
-		model.put("numberOfTransactions", transactionService.getNumberOfTransactionsForUserId(userId));
+		Integer numberOfTransactions = transactionService.getNumberOfTransactionsForUserId(userId);
+
 		model.put("transactions", transactions);
+		model.put("hasTransactions", numberOfTransactions > 0);
+		model.put("numberOfTransactions", numberOfTransactions);
+		model.put("numberOfPages", numberOfTransactions / itemsPerPages);
 
 		return new ModelAndView(viewName, model);
 	}

@@ -24,5 +24,25 @@
             <input type="submit" value="Transfer money">
 			</form>
 		</div>
+		
+		<table th:if="${hasTransactions}">
+          <thead>
+              <tr>
+                <th>From/To</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>DATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="t : ${transactions}">
+                <td th:text="${t.senderId}">Sender Id</td>
+                <td th:text="${t.description}">Description transaction</td>
+                <td th:text="${t.amount} + '€'">Amount €</td>
+                <td th:text="${t.date}">Date </td>
+              </tr>
+            </tbody>
+          </table>
+        <!-- End of connections table -->
 	</body>
 </html>

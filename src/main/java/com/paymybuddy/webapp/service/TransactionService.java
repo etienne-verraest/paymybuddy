@@ -2,6 +2,7 @@ package com.paymybuddy.webapp.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,7 @@ public class TransactionService {
 	 * @param amountWithoutFee							Double : The amount without fee
 	 */
 	private void updateRecipientBalance(Integer recipientId, double amountWithoutFee) {
-		transactionRepository.updaterRecipientBalance(recipientId, amountWithoutFee);
+		transactionRepository.updateRecipientBalance(recipientId, amountWithoutFee);
 	}
 
 	/**
@@ -81,10 +82,13 @@ public class TransactionService {
 		if (amount > 0) {
 			// Calculate the fee amount
 			amount = (amount * 0.05) / 100;
-			// Set precision to 2 using BigDecimal setScale method
-			return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP).doubleValue();
+			// Set precision to 3 using BigDecimal setScale method
+			return BigDecimal.valueOf(amount).setScale(3, RoundingMode.HALF_UP).doubleValue();
 		}
 		throw new TransactionServiceException("The amount entered is incorrect");
 	}
 
+	public List<Transaction> getTransactionsByPage(Integer userId, Integer numberOfItemsPerPage, Integer pageId) {
+		return transactionRepository.getUserTransactions(userId, numberOfItemsPerPage * pageId);
+	}
 }

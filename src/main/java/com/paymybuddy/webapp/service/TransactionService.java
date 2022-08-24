@@ -28,8 +28,7 @@ public class TransactionService {
 	 */
 	public boolean processTransaction(Transaction transaction) throws TransactionServiceException {
 
-		// TODO : Check if user exists
-		// TODO : Check if users are connected
+		// TODO : Check if user exists and if users are connected
 		if (transaction != null) {
 			Integer senderId = transaction.getSenderId();
 			Integer recipientId = transaction.getRecipientId();

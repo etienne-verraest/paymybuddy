@@ -133,9 +133,13 @@
                           <ul class="pagination">
                             <!-- Previous button -->
                             <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                          
+                            
                             <!-- Page number -->
-                            <th:block th:each="i: ${#numbers.sequence(1, numberOfPages+1)}">
+                            <!-- If numberOfPages == 0 then we only show the page n*1 link -->
+                            <li th:if="${numberOfPages eq 0}" class="page-item"><a class="page-link" th:text="1" th:href="@{/?(pageId=1)}">1</a></li>
+                            
+                            <!-- If numberOfPages > 0, we show page from 1 to n+1 -->
+                            <th:block th:if="${numberOfPages gt 0}" th:each="i: ${#numbers.sequence(1, numberOfPages+1)}">
                               <li class="page-item"><a class="page-link" th:text="${i}" th:href="@{/?(pageId=${i})}">1</a></li>
                             </th:block>
           

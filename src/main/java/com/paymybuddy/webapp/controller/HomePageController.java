@@ -40,6 +40,7 @@ public class HomePageController {
 	@Autowired
 	private TransactionService transactionService;
 
+	// This value is set in the application.properties file
 	@Value("${transactions.itemsPerPages}")
 	private Integer itemsPerPages;
 
@@ -68,6 +69,8 @@ public class HomePageController {
 
 		// The userService is used in the index.html page to transform raw datas
 		model.put("userService", userService);
+		// Creating an utility class InstantFormatter to format the date displayed
+		model.put("instantFormatter", new InstantFormatter());
 
 		// Connections related datas
 		model.put("connectionsList", connections);
@@ -89,11 +92,12 @@ public class HomePageController {
 		model.put("transactions", transactions);
 		model.put("hasTransactions", numberOfTransactions > 0);
 		model.put("numberOfTransactions", numberOfTransactions);
-		model.put("numberOfPages", numberOfTransactions / itemsPerPages);
 
-		// Creating an utility class InstantFormatter to format the date displayed
-		InstantFormatter instantFormatter = new InstantFormatter();
-		model.put("instantFormatter", instantFormatter);
+		// Calculating the number of pages. We need to convert the integer to double
+		// to get the decimal part. If decimal part is greater than 0, then we put the
+		// upper limit to the next integer
+		int numberOfPages = (int) Math.ceil((double) numberOfTransactions / itemsPerPages);
+		model.put("numberOfPages", numberOfPages);
 
 		return new ModelAndView(viewName, model);
 	}

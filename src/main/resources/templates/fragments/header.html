@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<body>
+		<!-- Navigation Section -->
+		<div th:fragment="header" class="row">
+		    <div class="col-12">
+		        <!-- Navigation Bar -->
+		        <nav class="navbar bg-light">
+		            <div class="container-fluid">
+		              <span class="navbar-brand h1"><span class="buddy-font-green fw-bold">Pay My Buddy</span><br>
+		              <small th:text="${firstName} + ' ' + ${lastName} + ' (balance : ' + ${balance} + ' €)'" class="fw-normal">Etienne Verraest (balance : 10 €)</small></span>
+		              <ul class="nav justify-content-end">
+		                  <li class="nav-item">
+		                    <a class="nav-link"href="/"><i class="bi bi-house"></i> Home</a>
+		                  </li>
+		                  <li class="nav-item">
+		                    <a class="nav-link" href="/bank"><i class="bi bi-piggy-bank"></i> Bank Account</a>
+		                  </li>
+		                  <li class="nav-item">
+		                    <a class="nav-link" href="/connections"><i class="bi bi-people"></i> Connections</a>
+		                  </li>
+		                  <li class="nav-item">
+		                    <a class="nav-link" href="/logout"><i class="bi bi-power"></i> Logout</a>
+		                  </li>
+		                </ul>
+		            </div> 
+		        </nav>
+		    </div>
+		</div>
+	</body>
+</html>

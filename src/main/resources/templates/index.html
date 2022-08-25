@@ -1,73 +1,155 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>PayMyBuddy - Homepage</title>
-	</head>
+    <head>
+        <title>PayMyBuddy - Homepage</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" media="all" href="/css/paymybuddy-style.css" th:href="@{/css/paymybuddy-style.css}"  />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+    </head>
 
-	<body>
-		<span th:text="${firstName} + ' ' + ${lastName} + ' (balance : ' + ${balance} + ' €)'">Hello [firstName] [lastName]</span><br>
-		<a href="/bank"> Add your bank account </a><br>
-		<a href="/connections"> Add a buddy </a><br>
-		<a href="/logout"> Log out </a>	
-	
-		<div th:if="${hasConnections}">
-			<form method="post" th:action="@{/start-transaction}" th:object="${startTransactionDto}">
-			<label for="buddyId">Choose a connection :</label>
-			<select th:field="*{buddyId}" name="buddyId" id="buddyId">
-			    <option value="">Choose a buddy</option>
-			    <option th:each="connection : ${connectionsList}" th:value="${connection.id}" th:text="${connection.firstName} + ' ' + ${connection.lastName}">FirstName LastName</option>
-			</select>
-			
-			<label for="amount">Amount to transfer :</label>
-            <input th:field="*{amount}"  type="number" id="amount" name="amount" min="0.1" th:max="${balance}" placeholder="1.00" step="0.1">
-            <input type="submit" value="Transfer money">
-			</form>
-		</div>
-		
-		<!-- Start of transactions div -->
-		<div th:if="${hasTransactions}">
-			<table>
-          		<thead>
-	              <tr>
-	                <th></th>
-	                <th>Description</th>
-	                <th>Amount</th>
-	                <th>Date</th>
-	              </tr>
-            	</thead>
-            	
-            	<tbody>
-					<!-- Loop for each transactions   -->
-					<tr th:each="t : ${transactions}">
-                
-		          		<!-- From/To formatting depend on current user logged -->
-		                <td th:if="${userId} eq ${t.senderId}" th:text="'To : ' + ${userService.returnNameFromId({t.recipientId})}">To : firstName lastName</td>
-		                <td th:if="${userId} neq ${t.senderId}" th:text="'From : ' + ${userService.returnNameFromId({t.senderId})}">From : firstName lastName</td>
+    <body>              
+        <div class="container"> 
+            <!-- Navigation Section -->
+            <div class="row">
+                <div class="col-12">
+                    <!-- Navigation Bar -->
+                    <nav class="navbar bg-light">
+                        <div class="container-fluid">
+                          <span class="navbar-brand h1"><span class="buddy-font-green fw-bold">Pay My Buddy</span><br>
+                          <small th:text="${firstName} + ' ' + ${lastName} + ' (balance : ' + ${balance} + ' €)'" class="fw-normal">Etienne Verraest (balance : 10 €)</small></span>
+                          <ul class="nav justify-content-end">
+                              <li class="nav-item">
+                                <a class="nav-link"href="/">Home</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" href="/bank">Bank Account</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link active" aria-current="page"  href="/connections">Connections</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" href="/logout">Logout</a>
+                              </li>
+                            </ul>
+                        </div> 
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Send Money Section -->
+            <div th:if="${hasConnections}" class="row mt-2">
+              <div class="col-12">
+                <div class="card">
+                  <h5 class="card-header">Send money to a buddy</h5>
+                  <!-- Start of card-body -->
+                  <div class="card-body">
+                     
+                    <!-- Start of form -->
+                    <form method="post" th:action="@{/start-transaction}" th:object="${startTransactionDto}">
+
+                      <div class="row">
+                        <div class="col-6">
+                          <select class="form-select" th:field="*{buddyId}" name="buddyId" id="buddyId">
+                            <option value="" selected>Choose a buddy</option>
+                            <option th:each="connection : ${connectionsList}" th:value="${connection.id}" th:text="${connection.firstName} + ' ' + ${connection.lastName}">FirstName LastName</option>
+                          </select>
+                        </div>
+                      
+                        <div class="col-4">
+                          <input th:field="*{amount}" class="form-control" type="number" id="amount" name="amount" min="0.1" th:max="${balance}" placeholder="1.0" step="0.1">     
+                        </div>
+                        
+                        <div class="col-1">
+                          <input type="submit" class="btn buddy-btn-green" value="Transfer money">
+                        </div>
+                      </div> 
+
+                    </form>
+                    <!-- End of form -->
+                  
+                  </div> 
+                  <!-- End of card-body -->
+                </div>
+            
+              </div>  
+            </div>
+            <!-- End of Send Money Section -->
+
+            <!-- Transactions -->
+            <div th:if="${hasTransactions}" class="row mt-4">
+              <div class="col-12">
+                <div class="card">
+                  <h5 class="card-header" th:text="'My transactions (' + ${numberOfTransactions} + ')'">My transactions (num)</h5>
+                  <!-- Start of card-body -->
+                  <div class="card-body">
+                  
+                    <!-- Transactions table : Start of row -->
+                    <div class="row">
+                      <table class="table table-striped">
+                        
+                        <thead>
+                          <tr>
+                            <th class="col-2 text-center">Type</th>
+                            <th class="col-2 text-center">Connection</th>
+                            <th class="col-4 text-center">Description</th>
+                            <th class="col-2 text-center">Amount (€) </th>
+                            <th class="col-2 text-center">Date</th>
+                          </tr>
+                        </thead>
+                        
+                        <tbody>
+                          <!-- Loop for each transactions   -->
+                          <tr th:each="t : ${transactions}">
+                          
+                              <td class="text-center" th:text="${userId} eq ${t.senderId} ? 'SENT' : 'RECEIVED'">SENT / RECEIVED</td>
+                              
+                              <!-- From/To formatting depend on current user logged -->
+                              <td class="text-center" th:if="${userId} eq ${t.senderId}" th:text="${userService.returnNameFromId({t.recipientId})}">firstName lastName</td>
+                              <td class="text-center" th:if="${userId} neq ${t.senderId}" th:text="${userService.returnNameFromId({t.senderId})}">firstName lastName</td>
+                            
+                              <!-- Transaction description -->
+                              <td class="text-center" th:text="${t.description}">Transaction description</td>
+                            
+                              <!-- Amount formatting depending on who is the sender  -->
+                              <td class="text-center" th:if="${userId} eq ${t.senderId}" th:text="'-' + ${t.amount} + '€'">-Amount €</td>
+                              <td class="text-center" th:if="${userId} neq ${t.senderId}" th:text="${t.amount} + '€'">Amount €</td>
+                            
+                              <!-- Transaction date -->
+                              <td class="text-center" th:text="${instantFormatter.formatDate({t.date})}">Date</td>
+                              
+                          </tr>
+                        </tbody>
+
+                      </table> 
+                    
+                    </div>
+                    <!-- Transactions table : End of row -->
+                    
+                    
+                    <!-- Pagination utility : Start of row -->
+                    <div class="row">
+                      <div class="offset-5 col-7">
+                        <nav aria-label="Page navigation">
+                          <ul class="pagination">
+                            <!-- Previous button -->
+                            <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                          
+                            <!-- Page number -->
+                            <th:block th:each="i: ${#numbers.sequence(1, numberOfPages+1)}">
+                              <li class="page-item"><a class="page-link" th:text="${i}" th:href="@{/?(pageId=${i})}">1</a></li>
+                            </th:block>
+          
+                            <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                    <!-- Pagination utility : End of row -->
 	                
-	                	<!-- Transaction description -->
-	                	<td th:text="${t.description}">Transaction description</td>
-	                
-	                	<!-- Amount formatting depending on who is the sender  -->
-	                	<td th:if="${userId} eq ${t.senderId}" th:text="'-' + ${t.amount} + '€'">-Amount €</td>
-	                	<td th:if="${userId} neq ${t.senderId}" th:text="${t.amount} + '€'">Amount €</td>
-	                
-	                	<!-- Transaction date -->
-	                	<td th:text="${t.date}">Date </td>
-	                	
-              		</tr>
-            	</tbody>   
-          	</table> <!-- End of connections table -->
-          	
-          	<br>
-          	<span th:text="'Number of transactions : ' + ${numberOfTransactions}">Number of transactions : numberOfTransactions</span>
-         	
-         	<br>
-      		<th:block th:each="i: ${#numbers.sequence(1, numberOfPages+1)}">
-         		<a th:text="${i}" th:href="@{/?(pageId=${i})}">N° of page</a>
-         	</th:block>
-        
-        </div> <!-- End of div -->
-        
-	</body>
+                  </div> <!-- Card Body closing -->
+                </div> <!-- Card closing -->
+              </div> <!-- col-12 closing -->
+            </div> <!-- Transactions closing -->
+          </div> <!-- Closing container div -->       
+    </body>
 </html>

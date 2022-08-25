@@ -81,8 +81,8 @@ public class TransactionService {
 		if (amount > 0) {
 			// Calculate the fee amount
 			amount = (amount * 0.05) / 100;
-			// Set precision to 3 using BigDecimal setScale method
-			return BigDecimal.valueOf(amount).setScale(3, RoundingMode.HALF_UP).doubleValue();
+			// Set precision to 2 using BigDecimal setScale method
+			return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP).doubleValue();
 		}
 		throw new TransactionServiceException("The amount entered is incorrect");
 	}

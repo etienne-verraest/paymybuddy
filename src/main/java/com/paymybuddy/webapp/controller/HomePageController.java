@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +24,8 @@ import com.paymybuddy.webapp.model.dto.StartTransactionDto;
 import com.paymybuddy.webapp.service.ConnectionService;
 import com.paymybuddy.webapp.service.TransactionService;
 import com.paymybuddy.webapp.service.UserService;
+import com.paymybuddy.webapp.util.InstantFormatter;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Controller
 public class HomePageController {
 
@@ -41,6 +40,9 @@ public class HomePageController {
 	@Autowired
 	private TransactionService transactionService;
 
+	@Value("${transactions.itemsPerPages}")
+	private Integer itemsPerPages;
+
 	/**
 	 * This is the home page controller, from there you can start a transaction with
 	 * a connection (a buddy).
@@ -48,8 +50,6 @@ public class HomePageController {
 	 */
 	@GetMapping("/")
 	public ModelAndView showUserPage(@RequestParam(required = false) Integer pageId) {
-
-		final Integer itemsPerPages = 4;
 
 		// Get current logged user
 		User user = userService.getLoggedUser();
@@ -90,6 +90,10 @@ public class HomePageController {
 		model.put("hasTransactions", numberOfTransactions > 0);
 		model.put("numberOfTransactions", numberOfTransactions);
 		model.put("numberOfPages", numberOfTransactions / itemsPerPages);
+
+		// Creating an utility class InstantFormatter to format the date displayed
+		InstantFormatter instantFormatter = new InstantFormatter();
+		model.put("instantFormatter", instantFormatter);
 
 		return new ModelAndView(viewName, model);
 	}

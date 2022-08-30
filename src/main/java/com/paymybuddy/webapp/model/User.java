@@ -67,7 +67,7 @@ public class User implements UserDetails {
 	private String lastName;
 
 	@Column
-	private Double balance = 0.0;
+	private Double balance = 0.00;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "userId")
 	private List<Connection> connections;

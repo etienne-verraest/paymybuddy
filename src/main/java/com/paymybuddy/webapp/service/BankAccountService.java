@@ -1,5 +1,7 @@
 package com.paymybuddy.webapp.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,7 @@ import com.paymybuddy.webapp.model.dto.BankAccountAddDto;
 import com.paymybuddy.webapp.repository.BankAccountRepository;
 
 @Service
+@Transactional
 public class BankAccountService {
 
 	@Autowired
@@ -59,7 +62,6 @@ public class BankAccountService {
 		if (checkIfUserBankAccountExists(userId)) {
 			BankAccount bankAccount = bankAccountRepository.findByUserId(userId);
 			bankAccount.setBankName(bankAccountAddDto.getBankName());
-			bankAccount.setRib(bankAccountAddDto.getRib());
 			bankAccount.setIban(bankAccountAddDto.getIban());
 			bankAccountRepository.save(bankAccount);
 			return true;

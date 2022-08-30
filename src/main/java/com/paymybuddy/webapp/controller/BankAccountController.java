@@ -135,7 +135,7 @@ public class BankAccountController {
 		} //
 		else // Otherwise, if there are no informations, we do a creation operation
 		{
-			BankAccount bankAccount = new BankAccount(user, bankAccountAddDto.getBankName(), bankAccountAddDto.getRib(),
+			BankAccount bankAccount = new BankAccount(user, bankAccountAddDto.getBankName(),
 					bankAccountAddDto.getIban());
 			bankAccountService.saveBankAccountInformation(bankAccount);
 			redirect.setUrl(viewName + "?success");

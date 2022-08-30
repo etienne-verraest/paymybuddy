@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.paymybuddy.webapp.exception.TransactionServiceException;
 import com.paymybuddy.webapp.model.Transaction;
 import com.paymybuddy.webapp.repository.TransactionRepository;
 
 @Service
+@Transactional
 public class TransactionService {
 
 	@Autowired
@@ -71,7 +73,7 @@ public class TransactionService {
 
 	/**
 	 * Calculate the 0.05% fee for each transaction
-	 * Precision is set to 0.000, for low amounts such as 5.00 euros
+	 * Precision is set to 0.00, for low amounts such as 5.00 euros
 	 *
 	 * @param amount									The amount from which we calculate the fee
 	 * @return											Double : the fee amount
@@ -80,7 +82,7 @@ public class TransactionService {
 	public double feeCalculator(double amount) throws TransactionServiceException {
 		if (amount > 0) {
 			// Calculate the fee amount
-			amount = (amount * 0.05) / 100;
+			amount = (amount * 0.5) / 100;
 			// Set precision to 2 using BigDecimal setScale method
 			return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP).doubleValue();
 		}

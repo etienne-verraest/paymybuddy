@@ -2,8 +2,6 @@ package com.paymybuddy.webapp.repository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,12 +14,10 @@ import com.paymybuddy.webapp.model.Transaction;
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
 	@Modifying
-	@Transactional
 	@Query(value = "UPDATE user u SET u.balance = (u.balance - :amount) WHERE u.id = :senderId", nativeQuery = true)
 	void updateSenderBalance(@Param("senderId") Integer senderId, @Param("amount") Double amountWithFee);
 
 	@Modifying
-	@Transactional
 	@Query(value = "UPDATE user u SET u.balance = (u.balance + :amount) WHERE u.id = :recipientId", nativeQuery = true)
 	void updateRecipientBalance(@Param("recipientId") Integer recipientId, @Param("amount") Double amountWithoutFee);
 

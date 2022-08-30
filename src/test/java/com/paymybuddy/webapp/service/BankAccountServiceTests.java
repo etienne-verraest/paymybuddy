@@ -50,7 +50,6 @@ class BankAccountServiceTests {
 		mockBankAccount.setUser(mockUser);
 		mockBankAccount.setBankName("European Bank");
 		mockBankAccount.setIban("EU765504515816798265");
-		mockBankAccount.setRib("76550451581679826512235");
 
 		mockUser.setBankAccount(mockBankAccount);
 	}
@@ -145,7 +144,6 @@ class BankAccountServiceTests {
 		BankAccountAddDto bankAccountAddDto = new BankAccountAddDto();
 		bankAccountAddDto.setBankName("French Bank");
 		bankAccountAddDto.setIban(mockBankAccount.getIban());
-		bankAccountAddDto.setRib(mockBankAccount.getRib());
 
 		// ACT
 		boolean response = bankAccountService.updateBankAccountInformation(mockUser.getId(), bankAccountAddDto);
@@ -164,7 +162,6 @@ class BankAccountServiceTests {
 		BankAccountAddDto bankAccountAddDto = new BankAccountAddDto();
 		bankAccountAddDto.setBankName("French Bank");
 		bankAccountAddDto.setIban(mockBankAccount.getIban());
-		bankAccountAddDto.setRib(mockBankAccount.getRib());
 
 		// ACT
 		Executable executable = () -> bankAccountService.updateBankAccountInformation(mockUser.getId(),

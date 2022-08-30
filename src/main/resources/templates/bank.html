@@ -78,7 +78,7 @@
                         <div class="card-body">
                             <form method="post" th:action="@{/bank-withdraw}" th:object="${bankAccountWithdrawDto}">
                                 <label for="withdrawMoney" class="form-label fw-bold">Amount to withdraw (€) :</label>
-                                <input th:field="*{withdrawMoney}" type="number" class="form-control" id="withdrawMoney" name="withdrawMoney" min="1" placeholder="1.0" step="0.01">
+                                <input th:field="*{withdrawMoney}" type="number" class="form-control" id="withdrawMoney" name="withdrawMoney" min="1" placeholder="1.00" step="0.01">
                                 <small th:errors="*{withdrawMoney}" class="text-danger">Minimum amount is 1€.</small>
                                 <input type="submit" class="btn buddy-btn-green mt-1" value="Withdraw money">
                             </form>
@@ -92,7 +92,7 @@
                         <div class="card-body">
                             <form method="post" th:action="@{/bank-deposit}" th:object="${bankAccountDepositDto}">
                                 <label for="depositMoney" class="form-label fw-bold">Amount to deposit (€) :</label>
-                                <input th:field="*{depositMoney}" type="number" class="form-control" id="depositMoney" name="depositMoney" min="1" th:max="${balance}" placeholder="1.0" step="0.01">
+                                <input th:field="*{depositMoney}" type="number" class="form-control" id="depositMoney" name="depositMoney" min="1" th:max="${balance}" placeholder="1.00" step="0.01">
                                 <input type="submit" class="btn buddy-btn-green mt-1"  value="Deposit money">
                                 <br><small th:errors="*{depositMoney}" class="text-danger">Minimum amount is 1€.</small>
                             </form>

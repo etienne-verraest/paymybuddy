@@ -105,18 +105,14 @@
                     
                     <!-- Pagination utility : Start of row -->
                     <div class="row">
-                      <div class="offset-5 col-7">
+                      <div th:if="${numberOfPages gt 1}" class="offset-5 col-7">
                         <nav aria-label="Page navigation">
                           <ul class="pagination">
                             <!-- Previous button -->
                             <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                             
                             <!-- Page number -->
-                            <!-- If numberOfPages == 0 then we only show the page n*1 link -->
-                            <li th:if="${numberOfPages eq 0}" class="page-item"><a class="page-link" th:text="1" th:href="@{/?(pageId=1)}">1</a></li>
-                            
-                            <!-- If numberOfPages > 0, we show page from 1 to n -->
-                            <th:block th:if="${numberOfPages gt 0}" th:each="i: ${#numbers.sequence(1, numberOfPages)}">
+                            <th:block th:each="i: ${#numbers.sequence(1, numberOfPages)}">
                               <li class="page-item"><a class="page-link" th:text="${i}" th:href="@{/?(pageId=${i})}">1</a></li>
                             </th:block>
           

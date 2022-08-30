@@ -29,6 +29,8 @@ import com.paymybuddy.webapp.util.InstantFormatter;
 @Controller
 public class HomePageController {
 
+	// TODO : Design for new user, without connections & transactions made
+
 	private static String viewName = ViewNameConstants.HOMEPAGE_VIEW_NAME;
 
 	@Autowired

@@ -15,9 +15,6 @@ public class BankAccountAddDto {
 	@NotEmpty(message = "Bank name must not be empty")
 	private String bankName;
 
-	@Size(min = 23, max = 23, message = "Your RIB should have 23 characters only")
-	private String rib;
-
 	@Size(min = 14, max = 34, message = "Your IBAN should have at least 14 characters and a maximum of 34 characters")
 	private String iban;
 }

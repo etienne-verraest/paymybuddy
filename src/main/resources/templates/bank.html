@@ -37,15 +37,6 @@
                             <small th:errors="*{iban}" class="text-danger">IBAN must not be empty</small>
                         </div>
 
-                        <!-- RIB -->
-                        <div class="mb-3">
-                            <label for="rib" class="form-label fw-bold">RIB
-                                <br><small class="fst-italic">Must have 23 characters</small>
-                            </label>
-                            <input th:field="*{rib}" type="text" class="form-control" id="rib">
-                            <small th:errors="*{rib}" class="text-danger">RIB must not be empty</small>
-                        </div>
-
                         <input th:if="${not accountIsSet}" type="submit" class="btn buddy-btn-green" value = "Add bank account">
                         <input th:if="${accountIsSet}" type="submit"class="btn buddy-btn-green"  value = "Update information">
                         <a th:if="${accountIsSet}" class="btn btn-danger" href="/bank?action=remove" role="button">Remove bank account</a>

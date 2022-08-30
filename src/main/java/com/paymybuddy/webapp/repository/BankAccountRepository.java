@@ -1,7 +1,5 @@
 package com.paymybuddy.webapp.repository;
 
-import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +14,6 @@ public interface BankAccountRepository extends JpaRepository<BankAccount, Intege
 	BankAccount findByUserId(Integer userId);
 
 	@Modifying
-	@Transactional
 	@Query(value = "DELETE FROM bank_account b WHERE b.user_id = :userId", nativeQuery = true)
 	void deleteBankAccountFromUserId(@Param("userId") Integer userId);
 }

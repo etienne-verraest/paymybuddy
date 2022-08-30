@@ -21,10 +21,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BankAccount {
 
-	public BankAccount(User user, String bankName, String rib, String iban) {
+	public BankAccount(User user, String bankName, String iban) {
 		this.user = user;
 		this.bankName = bankName;
-		this.rib = rib;
 		this.iban = iban;
 	}
 
@@ -38,9 +37,6 @@ public class BankAccount {
 
 	@Column(name = "bank_name")
 	private String bankName;
-
-	@Column
-	private String rib;
 
 	@Column
 	private String iban;

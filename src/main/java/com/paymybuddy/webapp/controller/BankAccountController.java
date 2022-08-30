@@ -26,11 +26,10 @@ import com.paymybuddy.webapp.model.dto.BankAccountWithdrawDto;
 import com.paymybuddy.webapp.service.BankAccountService;
 import com.paymybuddy.webapp.service.UserService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Controller
 public class BankAccountController {
+
+	// FIXME : IBAN or RIB must be filled, not both
 
 	@Autowired
 	private UserService userService;
@@ -114,12 +113,19 @@ public class BankAccountController {
 		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
+		Map<String, Object> model = new HashMap<>();
+		model.put("accountIsSet", bankAccountService.checkIfUserBankAccountExists(userId));
+		model.put("balance", user.getBalance());
+		model.put("firstName", user.getFirstName());
+		model.put("lastName", user.getLastName());
+		model.put("bankAccountWithdrawDto", new BankAccountWithdrawDto());
+		model.put("bankAccountDepositDto", new BankAccountDepositDto());
 
 		// If there are errors when adding/updating bank account
 		if (bindingResult.hasErrors()) {
-			return new ModelAndView(viewName);
+			return new ModelAndView(viewName, model);
 		}
-		Map<String, Object> model = new HashMap<>();
+
 		RedirectView redirect = new RedirectView();
 
 		// If the informations are already populated, we do an update operation
@@ -156,7 +162,6 @@ public class BankAccountController {
 		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
-
 		Map<String, Object> model = new HashMap<>();
 
 		// Update user balance
@@ -182,15 +187,9 @@ public class BankAccountController {
 	public ModelAndView submitBankDepositForm(@Valid BankAccountDepositDto bankAccountDepositDto,
 			BindingResult bindingResult) throws UserServiceException {
 
-		if (bindingResult.hasErrors()) {
-			return new ModelAndView(viewName);
-		}
-
 		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
-
-		// Initialize the model for the other parts of the template
 		Map<String, Object> model = new HashMap<>();
 		model.put("bankAccountAddDto", getBankForm(userId));
 		model.put("accountIsSet", bankAccountService.checkIfUserBankAccountExists(userId));
@@ -199,12 +198,18 @@ public class BankAccountController {
 		model.put("lastName", user.getLastName());
 		model.put("bankAccountWithdrawDto", new BankAccountWithdrawDto());
 
+		if (bindingResult.hasErrors()) {
+			return new ModelAndView(viewName, model);
+		}
+
 		// Try to deposit money on the bank account
 		try {
 			double money = bankAccountDepositDto.getDepositMoney();
 			boolean moneySent = userService.depositMoneyAndUpdateBalance(userId, money);
+			RedirectView redirect = new RedirectView();
 			if (moneySent) {
-				return new ModelAndView(viewName + "?success", model);
+				redirect.setUrl(viewName + "?deposit_success");
+				return new ModelAndView(redirect, new HashMap<>());
 			}
 		} catch (UserServiceException error) {
 			bindingResult.rejectValue("depositMoney", "", error.getMessage());

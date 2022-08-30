@@ -1,6 +1,6 @@
 package com.paymybuddy.webapp.model.dto;
 
-import javax.validation.constraints.NotEmpty;
+import com.paymybuddy.webapp.validation.Email;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConnectionAddDto {
 
-	@NotEmpty(message = "Email address must not be empty")
+	@Email
 	private String buddyMail;
 }

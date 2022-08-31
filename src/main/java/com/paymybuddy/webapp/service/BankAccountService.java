@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.paymybuddy.webapp.exception.BankAccountServiceException;
 import com.paymybuddy.webapp.model.BankAccount;
+import com.paymybuddy.webapp.model.User;
 import com.paymybuddy.webapp.model.dto.BankAccountAddDto;
 import com.paymybuddy.webapp.repository.BankAccountRepository;
 
@@ -91,6 +92,49 @@ public class BankAccountService {
 	 */
 	public boolean checkIfUserBankAccountExists(Integer userId) {
 		return (bankAccountRepository.findByUserId(userId) != null);
+	}
+
+	/**
+	 * Update user balance when withdrawing money from bank account
+	 *
+	 * @param userId							ID of the user we want to update
+	 * @param amountToAdd						The amount to add
+	 * @return									True if the amount was successfully added
+	 * @throws BankAccountServiceException		If user was not found
+	 */
+	public boolean withdrawMoneyAndUpdateBalance(Integer userId, double amountToAdd)
+			throws BankAccountServiceException {
+		User user = userService.findUserById(userId);
+		if (user != null) {
+			double balance = user.getBalance();
+			double totalBalance = balance + amountToAdd;
+			bankAccountRepository.updateBalance(userId, totalBalance);
+			return true;
+		}
+		throw new BankAccountServiceException("User was not found");
+	}
+
+	/**
+	 * Update user balance when depositing money on bank account
+	 *
+	 * @param userId							ID of the user we want to update
+	 * @param amountToSubtract					The amount to subtract from the balance
+	 * @throws BankAccountServiceException		- If amount to deposit is more than current account balance
+	 * 											- If user was not found
+	 */
+	public boolean depositMoneyAndUpdateBalance(Integer userId, double amountToSubtract)
+			throws BankAccountServiceException {
+		User user = userService.findUserById(userId);
+		if (user != null) {
+			double balance = user.getBalance();
+			if (amountToSubtract <= balance) {
+				double totalBalance = balance - amountToSubtract;
+				bankAccountRepository.updateBalance(userId, totalBalance);
+				return true;
+			}
+			throw new BankAccountServiceException("Amount to deposit is greater than your current account balance");
+		}
+		throw new BankAccountServiceException("User was not found");
 	}
 
 }

@@ -155,17 +155,24 @@ public class BankAccountController {
 	public ModelAndView submitBankWithdrawForm(@Valid BankAccountWithdrawDto bankAccountWithdrawDto,
 			BindingResult bindingResult) throws UserServiceException {
 
-		if (bindingResult.hasErrors()) {
-			return new ModelAndView(viewName);
-		}
-
 		// Get current logged user
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
+
 		Map<String, Object> model = new HashMap<>();
+		model.put("bankAccountAddDto", getBankForm(userId));
+		model.put("accountIsSet", bankAccountService.checkIfUserBankAccountExists(userId));
+		model.put("balance", user.getBalance());
+		model.put("firstName", user.getFirstName());
+		model.put("lastName", user.getLastName());
+		model.put("bankAccountDepositDto", new BankAccountDepositDto());
+
+		if (bindingResult.hasErrors()) {
+			return new ModelAndView(viewName, model);
+		}
 
 		// Update user balance
-		double money = bankAccountWithdrawDto.getWithdrawMoney();
+		double money = Double.parseDouble(bankAccountWithdrawDto.getWithdrawMoney());
 		userService.withdrawMoneyAndUpdateBalance(userId, money);
 
 		RedirectView redirect = new RedirectView();
@@ -204,7 +211,7 @@ public class BankAccountController {
 
 		// Try to deposit money on the bank account
 		try {
-			double money = bankAccountDepositDto.getDepositMoney();
+			double money = Double.parseDouble(bankAccountDepositDto.getDepositMoney());
 			boolean moneySent = userService.depositMoneyAndUpdateBalance(userId, money);
 			RedirectView redirect = new RedirectView();
 			if (moneySent) {

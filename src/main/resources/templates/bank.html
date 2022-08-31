@@ -70,8 +70,9 @@
                             <form method="post" th:action="@{/bank-withdraw}" th:object="${bankAccountWithdrawDto}">
                                 <label for="withdrawMoney" class="form-label fw-bold">Amount to withdraw (€) :</label>
                                 <input th:field="*{withdrawMoney}" type="number" class="form-control" id="withdrawMoney" name="withdrawMoney" min="1" placeholder="1.00" step="0.01">
-                                <small th:errors="*{withdrawMoney}" class="text-danger">Minimum amount is 1€.</small>
                                 <input type="submit" class="btn buddy-btn-green mt-1" value="Withdraw money">
+                                <br><small th:errors="*{withdrawMoney}" class="text-danger">Minimum amount is 1€.</small>
+                               
                             </form>
                             <div th:if="${param.withdraw_success}" class="alert alert-info alert-dismissible fade show" role="alert">Successfully withdrew money from bank account<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>                          
                         </div>

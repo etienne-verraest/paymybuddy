@@ -1,5 +1,9 @@
 package com.paymybuddy.webapp.model.dto;
 
+import javax.validation.constraints.NotNull;
+
+import com.paymybuddy.webapp.validation.IsNumeric;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StartTransactionDto {
 
+	@NotNull(message = "Please select a buddy")
 	private Integer buddyId;
 
-	private double amount;
+	@IsNumeric
+	private String amount;
 }

@@ -1,5 +1,7 @@
 package com.paymybuddy.webapp.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,6 +74,8 @@ public class TransactionController {
 			model.put("amountToTransfer", amount);
 			model.put("fee", fee);
 			model.put("totalAmount", amount + fee);
+			model.put("balanceAfterPayment", BigDecimal.valueOf(user.getBalance() - (amount + fee))
+					.setScale(2, RoundingMode.HALF_UP).doubleValue());
 
 			User buddy = userService.findUserById(buddyId);
 			model.put("buddyFirstName", buddy.getFirstName());
@@ -105,6 +109,9 @@ public class TransactionController {
 			model.put("fee", transactionService.feeCalculator(transactionDto.getAmount()));
 			model.put("totalAmount",
 					transactionDto.getAmount() + transactionService.feeCalculator(transactionDto.getAmount()));
+
+			model.put("balanceAfterPayment", user.getBalance()
+					- (transactionDto.getAmount() + transactionService.feeCalculator(transactionDto.getAmount())));
 
 			User buddy = userService.findUserById(transactionDto.getRecipientId());
 			model.put("buddyFirstName", buddy.getFirstName());

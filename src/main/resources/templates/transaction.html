@@ -1,34 +1,74 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>PayMyBuddy - Transaction</title>
-	</head>
+    <head>
+        <title>PayMyBuddy - Transaction</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" media="all" href="/css/paymybuddy-style.css" th:href="@{/css/paymybuddy-style.css}"  />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+    </head>
 
-	<body>
-		<form method="post" th:action="@{/transaction-process}" th:object="${transactionDto}">
-			<!--  Buddy Id -->
-			<input type="hidden" id="recipientId" name="recipientId" th:value="${buddyId}">
-			
-			<!--  Buddy First name and last name -->
-			<br><span th:text="'To : ' + ${buddyFirstName} + ' ' + ${buddyLastName}">To : [buddyFirstName] [buddyLastName]</span>
-			
-			<!--  Amount to transfer -->
-			<br><span th:text="'Amount to transfer : ' + ${amountToTransfer} + ' €' ">Amount : [amount] € </span>
-			<input type="hidden" id="amount" name="amount" th:value="${amountToTransfer}">
-			
-			<!-- Fee  -->
-			<br><span th:text="'Fee : ' + ${fee} + ' € '">Fee : [fee] € </span>
-			
-			<br><span th:text="'Total : ' + ${totalAmount} + ' € '">Total : [amount + fee] € </span>
-			
-			<!--  Description -->
-			<br><label for="description">Description <small>(150 characters maximum)</small> : </label>
-			<input th:field="*{description}" type="text" id="description" name="description" minlength="1" maxlength="150" size="50">
-			<small th:errors="*{description}">Please set a description</small>
-			
-			<!-- Submit button -->
-			<br><input type="submit" value="Confirm transaction">
-		</form>
-	</body>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-6 offset-3 p-3 mt-3 border buddy-bg-green text-center"> 
+                    Transaction
+                </div>
+            </div>
+            
+            
+            <div class="row">
+                <div class="col-6 offset-3 p-3 border bg-light">                   
+
+                    <!-- Form content -->
+                    <form method="post" th:action="@{/transaction-process}" th:object="${transactionDto}">
+                    
+                        <!--  Buddy Id -->
+			            <input type="hidden" id="recipientId" name="recipientId" th:value="${buddyId}">
+                       
+                        <!-- To -->
+                        <div class="mb-3">
+			                <span class="col-2 fw-semibold">To : </span>
+                            <span class="col-6" th:text="${buddyFirstName} + ' ' + ${buddyLastName}">Etienne Verraest</span>
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="mb-3">
+			                <span class="col-2 fw-semibold">Amount : </span>
+                            <span class="col-6" th:text="${amountToTransfer} + ' €'">100.00 €</span>
+                            <input type="hidden" id="amount" name="amount" th:value="${amountToTransfer}">
+                        </div>
+
+                        <!-- Fee -->
+                        <div class="mb-3">
+                            <span class="col-2 fw-semibold">Fee : </span>
+                            <span class="col-6" th:text="${fee} + ' €'">1.00 €</span>
+                        </div>
+
+                        <!-- Total -->
+                        <div class="mb-3">
+                            <span class="col-2 fw-semibold">Total : </span>
+                            <span class="col-6" th:text="${totalAmount} + ' €'">101.00 €</span>
+                        </div>
+
+                        <!-- New balance -->
+                        <div class="mb-3">
+                            <span class="col-2 fw-semibold">Balance after payment : </span>
+                            <span class="col-6" th:text="${balanceAfterPayment} + ' €'">50 €</span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description">Description <small>(150 characters maximum)</small> : </label>
+                            <input th:field="*{description}" class="form-control" type="text" id="description" name="description" minlength="1" maxlength="150" size="50">
+                            <small th:errors="*{description}" class="text-danger">Please set a description</small>
+                        </div>
+
+                        <div class="row">
+                            <a class="offset-1 col-4 btn btn-danger" th:href="@{/}" role="button">Cancel</a> 
+                            <button type="submit" class="offset-2 col-4 btn buddy-btn-green">Pay</button>
+                       </div>
+                    </form>
+                </div>
+            </div>
+    </body>
 </html>

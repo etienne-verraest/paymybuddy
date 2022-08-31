@@ -13,6 +13,11 @@
             
             <div th:insert="fragments/header :: header"></div>
 
+            <div th:if="${param.transaction_success}" class="mt-2 alert alert-info alert-dismissible fade show" role="alert">
+                Your transaction is successful, it is now visible in your "My transactions" section
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <!-- Send Money Section -->
             <div th:if="${hasConnections}" class="row mt-2">
               <div class="col-12">
@@ -114,15 +119,15 @@
                         <nav aria-label="Page navigation">
                           <ul class="pagination">
                     
-                    		<!-- Previous page if pageId > 1 -->
-						    <li th:if="${(not #strings.equals(1, param.pageId)) and param.pageId != null}" class="page-item">
-						      	<a class="page-link" th:href="@{/?(pageId=${#numbers.formatInteger(param.pageId, 1)} - 1)}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-						    </li>
-						    
-						    <!-- Disable previous page if pageId == null or pageId == 1 -->
-						    <li th:if="${#strings.equals(1, param.pageId) or param.pageId == null}" class="page-item disabled">
-						      	<a class="page-link" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-						    </li>
+                            <!-- Previous page if pageId > 1 -->
+                            <li th:if="${(not #strings.equals(1, param.pageId)) and param.pageId != null}" class="page-item">
+                                <a class="page-link" th:href="@{/?(pageId=${#numbers.formatInteger(param.pageId, 1)} - 1)}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                            </li>
+                            
+                            <!-- Disable previous page if pageId == null or pageId == 1 -->
+                            <li th:if="${#strings.equals(1, param.pageId) or param.pageId == null}" class="page-item disabled">
+                                <a class="page-link" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                            </li>
 						    
                     
                             <!-- Page number if pageId is set -->
@@ -138,24 +143,26 @@
                             </th:block>
           					             
           					   
-          					<!-- Enable next page if we are not on the last page and if pageId != null -->
-						    <li th:if="${(not #strings.equals(param.pageId, numberOfPages)) and param.pageId != null}" class="page-item">
-						      	<a class="page-link" th:href="@{/?(pageId=${#numbers.formatInteger(param.pageId, 1)} +1 )}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-						    </li>
-						    
-						    <!-- If pageId is null, then the next page is inevitably 2 -->
-						    <li th:if="${(not #strings.equals(param.pageId, numberOfPages)) and param.pageId == null}" class="page-item">
-						      	<a class="page-link" th:href="@{/?(pageId=2)}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-						    </li>
-						    
-						    <!-- Disable next page if we are on the last (using numberOfPages values) -->
-						    <li th:if="${#strings.equals(param.pageId, numberOfPages)}" class="page-item disabled">
-						      	<a class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-						    </li>             
+                            <!-- Enable next page if we are not on the last page and if pageId != null -->
+                            <li th:if="${(not #strings.equals(param.pageId, numberOfPages)) and param.pageId != null}" class="page-item">
+                                <a class="page-link" th:href="@{/?(pageId=${#numbers.formatInteger(param.pageId, 1)} +1 )}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+                            </li>
+                            
+                            <!-- If pageId is null, then the next page is inevitably 2 -->
+                            <li th:if="${(not #strings.equals(param.pageId, numberOfPages)) and param.pageId == null}" class="page-item">
+                                <a class="page-link" th:href="@{/?(pageId=2)}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+                            </li>
+                            
+                            <!-- Disable next page if we are on the last (using numberOfPages values) -->
+                            <li th:if="${#strings.equals(param.pageId, numberOfPages)}" class="page-item disabled">
+                                <a class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+                            </li>             
           					                      
                           
                          	</ul>
                         </nav>
+
+
                       </div>
                     </div>
                     <!-- Pagination utility : End of row -->
@@ -164,6 +171,34 @@
                 </div> <!-- Card closing -->
               </div> <!-- col-12 closing -->
             </div> <!-- Transactions closing -->
-          </div> <!-- Closing container div -->       
-    </body>
+
+
+          <!-- If user has no connections -->
+          <div th:if="${not hasConnections}" class="row mt-2">
+            <div class="col-12">
+              <div class="card">
+                <h5 class="card-header">Add a connection</h5>
+                  <div class="card-body">
+                  To get started and make your first payment, you must add your buddies on the connections page.
+                  <br><a class="btn buddy-btn-green float-end" th:href="@{/connections}" role="button">Bring me there</a> 
+                  </div> 
+              </div>
+            </div>
+          </div>
+
+          <!-- If user has no transactions -->
+          <div th:if="${not hasTransactions}" class="row mt-4">
+            <div class="col-12">
+              <div class="card">
+                <h5 class="card-header">My transactions</h5>
+                  <div class="card-body text-center">
+                    <i class="fs-2 bi bi-emoji-frown"></i><br>
+                    Looks like you don't have any transaction yet
+                  </div> 
+              </div>
+            </div>
+          </div>
+              
+      </div> <!-- Closing container div -->       
+  </body>
 </html>

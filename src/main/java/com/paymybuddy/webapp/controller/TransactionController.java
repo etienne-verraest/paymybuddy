@@ -26,9 +26,6 @@ import com.paymybuddy.webapp.model.dto.TransactionDto;
 import com.paymybuddy.webapp.service.TransactionService;
 import com.paymybuddy.webapp.service.UserService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Controller
 public class TransactionController {
 

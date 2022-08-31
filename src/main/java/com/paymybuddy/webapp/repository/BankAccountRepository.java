@@ -16,4 +16,8 @@ public interface BankAccountRepository extends JpaRepository<BankAccount, Intege
 	@Modifying
 	@Query(value = "DELETE FROM bank_account b WHERE b.user_id = :userId", nativeQuery = true)
 	void deleteBankAccountFromUserId(@Param("userId") Integer userId);
+
+	@Modifying
+	@Query(value = "UPDATE user u SET u.balance = :balance WHERE u.id = :userId", nativeQuery = true)
+	void updateBalance(@Param("userId") Integer userId, @Param("balance") Double balance);
 }

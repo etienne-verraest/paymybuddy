@@ -114,7 +114,7 @@ public class UserService implements UserDetailsService {
 	 * This method returns the mail address of the logged user for the current session
 	 * This is a private method and is used by the getLoggedUser method.
 	 *
-	 * @return							String : the mail address
+	 * @return								String : the mail address
 	 */
 	private String getEmailOfLoggedUser() {
 		String mail = null;
@@ -131,7 +131,7 @@ public class UserService implements UserDetailsService {
 	/**
 	 * Get current logged user
 	 *
-	 * @return								User object
+	 * @return									User object
 	 */
 	public User getLoggedUser() {
 		return userRepository.findUserByMail(getEmailOfLoggedUser());
@@ -148,50 +148,10 @@ public class UserService implements UserDetailsService {
 	}
 
 	/**
-	 * Update user balance when withdrawing money from bank account
+	 * Returns a formatted string with first and last name of a given user
 	 *
-	 * @param userId							ID of the user we want to update
-	 * @param amountToAdd						The amount to add
-	 * @return									True if the amount was successfully added
-	 * @throws UserServiceException				If user was not found
+	 * @param userId							The user Id
 	 */
-	public boolean withdrawMoneyAndUpdateBalance(Integer userId, double amountToAdd) throws UserServiceException {
-
-		User user = userRepository.findUserById(userId);
-		if (user != null) {
-			double balance = user.getBalance();
-			double totalBalance = balance + amountToAdd;
-			user.setBalance(totalBalance);
-			userRepository.save(user);
-			return true;
-		}
-		throw new UserServiceException("User was not found");
-	}
-
-	/**
-	 * Update user balance when depositing money on bank account
-	 *
-	 * @param userId							ID of the user we want to update
-	 * @param amountToSubtract					The amount to subtract from the balance
-	 * @return									True
-	 * @throws UserServiceException				- If amount to deposit is more than current account balance
-	 * 											- If user was not found
-	 */
-	public boolean depositMoneyAndUpdateBalance(Integer userId, double amountToSubtract) throws UserServiceException {
-		User user = userRepository.findUserById(userId);
-		if (user != null) {
-			double balance = user.getBalance();
-			if (amountToSubtract <= balance) {
-				double totalBalance = balance - amountToSubtract;
-				user.setBalance(totalBalance);
-				userRepository.save(user);
-				return true;
-			}
-			throw new UserServiceException("Amount to deposit is greater than your current account balance");
-		}
-		throw new UserServiceException("User was not found");
-	}
-
 	public String returnNameFromId(Integer userId) {
 		User user = userRepository.findUserById(userId);
 		return String.format("%s %s", user.getFirstName(), user.getLastName());

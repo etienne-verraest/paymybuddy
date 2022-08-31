@@ -34,17 +34,15 @@
                     <table th:if="${hasConnections}" class="table table-striped">
                         <thead>
                           <tr>
-                            <th class="col-2">Name</th>
+                            <th class="col-3">Name</th>
                             <th class="col-4">E-mail</th>
                             <th class="col-2"></th>
-                            <th class="col-1"></th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr th:each="connection : ${connectionsList}">
                             <td class="align-middle" th:text="|${connection.firstName} ${connection.lastName}|">Etienne Verraest</td>
                             <td class="align-middle" th:text="${connection.mail}">verraest.etienne@gmail.com</td>
-                            <td><a class="btn buddy-btn-green" role="button">Send Money</a></td>
                             <td><a class="btn btn-danger" th:href="@{/connections?action=remove(buddyId=${connection.id})}" role="button">Unfriend</a></td>
                           </tr>
                         </tbody>

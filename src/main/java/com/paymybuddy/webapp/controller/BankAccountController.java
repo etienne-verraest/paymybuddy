@@ -153,7 +153,7 @@ public class BankAccountController {
 	 */
 	@PostMapping("/bank-withdraw")
 	public ModelAndView submitBankWithdrawForm(@Valid BankAccountWithdrawDto bankAccountWithdrawDto,
-			BindingResult bindingResult) throws UserServiceException {
+			BindingResult bindingResult) throws BankAccountServiceException {
 
 		// Get current logged user
 		User user = userService.getLoggedUser();
@@ -173,7 +173,7 @@ public class BankAccountController {
 
 		// Update user balance
 		double money = Double.parseDouble(bankAccountWithdrawDto.getWithdrawMoney());
-		userService.withdrawMoneyAndUpdateBalance(userId, money);
+		bankAccountService.withdrawMoneyAndUpdateBalance(userId, money);
 
 		RedirectView redirect = new RedirectView();
 		redirect.setUrl(viewName + "?withdraw_success");
@@ -192,7 +192,7 @@ public class BankAccountController {
 	 */
 	@PostMapping("/bank-deposit")
 	public ModelAndView submitBankDepositForm(@Valid BankAccountDepositDto bankAccountDepositDto,
-			BindingResult bindingResult) throws UserServiceException {
+			BindingResult bindingResult) throws BankAccountServiceException {
 
 		// Get current logged user
 		User user = userService.getLoggedUser();
@@ -212,13 +212,13 @@ public class BankAccountController {
 		// Try to deposit money on the bank account
 		try {
 			double money = Double.parseDouble(bankAccountDepositDto.getDepositMoney());
-			boolean moneySent = userService.depositMoneyAndUpdateBalance(userId, money);
+			boolean moneySent = bankAccountService.depositMoneyAndUpdateBalance(userId, money);
 			RedirectView redirect = new RedirectView();
 			if (moneySent) {
 				redirect.setUrl(viewName + "?deposit_success");
 				return new ModelAndView(redirect, new HashMap<>());
 			}
-		} catch (UserServiceException error) {
+		} catch (BankAccountServiceException error) {
 			bindingResult.rejectValue("depositMoney", "", error.getMessage());
 			return new ModelAndView(viewName, model);
 		}

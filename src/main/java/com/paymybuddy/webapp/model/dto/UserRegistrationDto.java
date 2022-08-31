@@ -17,6 +17,7 @@ package com.paymybuddy.webapp.model.dto;
 import javax.validation.constraints.NotEmpty;
 
 import com.paymybuddy.webapp.validation.Email;
+import com.paymybuddy.webapp.validation.LettersOnly;
 import com.paymybuddy.webapp.validation.NonexistentEmail;
 import com.paymybuddy.webapp.validation.PasswordsMatch;
 
@@ -41,9 +42,11 @@ public class UserRegistrationDto {
 	private String passwordConfirmation;
 
 	@NotEmpty(message = "First name field must not be empty")
+	@LettersOnly
 	private String firstName;
 
 	@NotEmpty(message = "Last name field must not be empty")
+	@LettersOnly
 	private String lastName;
 
 }

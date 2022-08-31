@@ -30,10 +30,12 @@
                             <option value="" selected>Choose a buddy</option>
                             <option th:each="connection : ${connectionsList}" th:value="${connection.id}" th:text="${connection.firstName} + ' ' + ${connection.lastName}">FirstName LastName</option>
                           </select>
+                          <small th:errors="*{buddyId}" class="text-danger">Please select a buddy</small>
                         </div>
                       
                         <div class="col-4">
                           <input th:field="*{amount}" class="form-control" type="number" id="amount" name="amount" min="0.1" th:max="${balance}" placeholder="1.0" step="0.1">     
+                          <small th:errors="*{amount}" class="text-danger">Please enter a valid amount</small>
                         </div>
                         
                         <div class="col-1">

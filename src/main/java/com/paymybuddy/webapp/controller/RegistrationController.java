@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +67,11 @@ public class RegistrationController {
 
 		// Creating the user if every fields from UserDto have been validated
 		User user = modelMapper.map(userRegistrationDto, User.class);
+
+		// Make sur that the first letter of these 2 fields are capitalized
+		user.setFirstName(StringUtils.capitalize(user.getFirstName().toLowerCase()));
+		user.setLastName(StringUtils.capitalize(user.getLastName().toLowerCase()));
+
 		userService.createUser(user);
 
 		RedirectView redirect = new RedirectView();

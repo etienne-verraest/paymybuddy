@@ -13,6 +13,11 @@
                 Your transaction is successful, it is now visible in your "My transactions" section
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            
+           <div th:if="${param.transaction_error}" class="mt-2 alert alert-warning alert-dismissible fade show" role="alert">
+                There was an error during the transaction, please try again
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
 
             <!-- Send Money Section -->
             <div th:if="${hasConnections}" class="row mt-2">

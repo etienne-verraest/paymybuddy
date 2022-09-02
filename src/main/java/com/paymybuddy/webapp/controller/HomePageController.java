@@ -90,9 +90,9 @@ public class HomePageController {
 
 		// Calculate the number of pages to show for the user
 		List<Transaction> transactions;
-		if (pageId != null && pageId > numberOfPages) {
-			// If the user tries to go beyond the number of page, we redirect him to the
-			// main page
+		if (pageId != null && ((pageId > numberOfPages) || pageId <= 0)) {
+			// If the user tries to go beyond the number of page (or less than 0), we
+			// redirect him to the main page
 			return new ModelAndView(new RedirectView("/"));
 		} else if (pageId == null || pageId == 1) {
 			transactions = transactionService.getTransactionsFirstPage(userId, itemsPerPages);

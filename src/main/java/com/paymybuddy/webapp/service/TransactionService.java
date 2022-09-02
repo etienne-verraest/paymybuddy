@@ -84,9 +84,19 @@ public class TransactionService {
 			// Calculate the fee amount
 			amount = (amount * 0.5) / 100;
 			// Set precision to 2 using BigDecimal setScale method
-			return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP).doubleValue();
+			return setTwoDecimalsPrecision(amount);
 		}
 		throw new TransactionServiceException("The amount entered is incorrect");
+	}
+
+	/**
+	 * Utility method that set the value to a precision of 2 decimals
+	 *
+	 * @param value										The value of the decimal
+	 * @return											A Number
+	 */
+	public double setTwoDecimalsPrecision(double value) {
+		return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 
 	/**

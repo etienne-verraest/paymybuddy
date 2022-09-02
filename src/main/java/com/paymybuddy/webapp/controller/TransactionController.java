@@ -1,7 +1,5 @@
 package com.paymybuddy.webapp.controller;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,20 +64,30 @@ public class TransactionController {
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 		if (inputFlashMap != null) {
 
-			double amount = (Double) inputFlashMap.get("amount");
+			// Recipient
 			Integer buddyId = (Integer) inputFlashMap.get("buddyId");
-			double fee = transactionService.feeCalculator(amount);
-
-			model.put("buddyId", buddyId);
-			model.put("amountToTransfer", amount);
-			model.put("fee", fee);
-			model.put("totalAmount", amount + fee);
-			model.put("balanceAfterPayment", BigDecimal.valueOf(user.getBalance() - (amount + fee))
-					.setScale(2, RoundingMode.HALF_UP).doubleValue());
-
 			User buddy = userService.findUserById(buddyId);
 			model.put("buddyFirstName", buddy.getFirstName());
 			model.put("buddyLastName", buddy.getLastName());
+			model.put("buddyId", buddyId);
+
+			// Amount
+			double amount = (Double) inputFlashMap.get("amount");
+			amount = transactionService.setTwoDecimalsPrecision(amount);
+			model.put("amountToTransfer", amount);
+
+			// Fee
+			double fee = transactionService.setTwoDecimalsPrecision(transactionService.feeCalculator(amount));
+			model.put("fee", fee);
+
+			// Total Amount and balance after payment
+			model.put("totalAmount", transactionService.setTwoDecimalsPrecision(amount + fee));
+			model.put("balanceAfterPayment",
+					transactionService.setTwoDecimalsPrecision(user.getBalance() - (amount + fee)));
+		} else {
+			// If user refresh the page, the flash map is lost, so we need to redirect the
+			// user to the home page
+			return new ModelAndView(new RedirectView("/?transaction_error"));
 		}
 
 		return new ModelAndView(viewName, model);
@@ -100,22 +108,28 @@ public class TransactionController {
 		User user = userService.getLoggedUser();
 		Integer userId = user.getId();
 
-		// We don't want to lose the model if there are validations errors
+		// We don't want to lose the model if there are validations errors, so we have
+		// to recover everything from the Dto
 		Map<String, Object> model = new HashMap<>();
 		if (bindingResult.hasErrors()) {
-			model.put("senderId", userId);
-			model.put("buddyId", transactionDto.getRecipientId());
-			model.put("amountToTransfer", transactionDto.getAmount());
-			model.put("fee", transactionService.feeCalculator(transactionDto.getAmount()));
-			model.put("totalAmount",
-					transactionDto.getAmount() + transactionService.feeCalculator(transactionDto.getAmount()));
 
-			model.put("balanceAfterPayment", user.getBalance()
-					- (transactionDto.getAmount() + transactionService.feeCalculator(transactionDto.getAmount())));
-
+			// Recipient and sender
 			User buddy = userService.findUserById(transactionDto.getRecipientId());
 			model.put("buddyFirstName", buddy.getFirstName());
 			model.put("buddyLastName", buddy.getLastName());
+			model.put("senderId", userId);
+			model.put("buddyId", transactionDto.getRecipientId());
+
+			// Fee and amount
+			double amount = transactionService.setTwoDecimalsPrecision(transactionDto.getAmount());
+			double fee = transactionService.setTwoDecimalsPrecision(transactionService.feeCalculator(amount));
+			model.put("amountToTransfer", amount);
+			model.put("fee", fee);
+
+			// Total Amount and balance after payment
+			model.put("totalAmount", transactionService.setTwoDecimalsPrecision(amount + fee));
+			model.put("balanceAfterPayment",
+					transactionService.setTwoDecimalsPrecision(user.getBalance() - (amount + fee)));
 
 			return new ModelAndView(viewName, model);
 		}

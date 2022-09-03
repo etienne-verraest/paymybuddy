@@ -24,7 +24,7 @@ There are no sequences to import, because MySQL manages it itself by using the A
 ## Externalized MySQL configuration
 For security purposes, the database credentials are externalized from the project. In order to make the database works, you must create a `jdbc.properties` file on your computer.
 <br> **In the main/resources folder, there is an empty jdbc.properties file that you can use.**
-<br> When the file is created you must edit `application.properties` property spring.config.import` and set your own path.
+<br> When the file is created you must edit `application.properties` property `spring.config.import` and set your own path.
 <br> The application should start correctly if everything is set up properly.
 
 ## Application.properties

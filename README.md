@@ -16,8 +16,8 @@ Pay My Buddy is a web application that allows users to transfer money to others 
 ## Creating the database
 In order to get started, you need to follow these steps :
 1. Create a new database called `paymybuddy` with the following command : `CREATE DATABASE paymybuddy;`
-2. Import the `schema.sql` file (in the main/resources folder) to create the table
-3. (Optional) Import the `data.sql` in your newly created database to have a set of data and try the application directly.
+2. Import the `schema.sql` file (in the main/resources folder) to create the tables
+3. (Optional) Import the `data.sql` in your newly created database to have a set of data and try the application directly (*refer to 'Demo of Application' section for more information*)
 
 ## Externalized MySQL configuration
 (When implemented, explain how to connect the application to the database with the settings.xml file)

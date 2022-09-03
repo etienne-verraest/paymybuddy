@@ -59,6 +59,20 @@
               </div>  
             </div>
             <!-- End of Send Money Section -->
+            
+          <!-- If user has no connections -->
+          <div th:if="${not hasConnections}" class="row mt-2">
+            <div class="col-12">
+              <div class="card">
+                <h5 class="card-header">Add a connection</h5>
+                  <div class="card-body">
+                  To get started and make your first payment, you must add your buddies on the connections page.
+                  <br><a class="btn buddy-btn-green float-end" th:href="@{/connections}" role="button">Bring me there</a> 
+                  </div> 
+              </div>
+            </div>
+          </div>
+            
 
             <!-- Transactions -->
             <div th:if="${hasTransactions}" class="row mt-4">
@@ -172,20 +186,6 @@
                 </div> <!-- Card closing -->
               </div> <!-- col-12 closing -->
             </div> <!-- Transactions closing -->
-
-
-          <!-- If user has no connections -->
-          <div th:if="${not hasConnections}" class="row mt-2">
-            <div class="col-12">
-              <div class="card">
-                <h5 class="card-header">Add a connection</h5>
-                  <div class="card-body">
-                  To get started and make your first payment, you must add your buddies on the connections page.
-                  <br><a class="btn buddy-btn-green float-end" th:href="@{/connections}" role="button">Bring me there</a> 
-                  </div> 
-              </div>
-            </div>
-          </div>
 
           <!-- If user has no transactions -->
           <div th:if="${not hasTransactions}" class="row mt-4">

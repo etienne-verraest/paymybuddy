@@ -29,8 +29,6 @@ import com.paymybuddy.webapp.service.UserService;
 @Controller
 public class BankAccountController {
 
-	// FIXME : IBAN or RIB must be filled, not both
-
 	@Autowired
 	private UserService userService;
 

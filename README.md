@@ -8,10 +8,10 @@ Pay My Buddy is a web application that allows users to transfer money to others 
 <br>
 
 ## UML Class Diagram
-![uml](./readme/paymybuddy-uml.png)
+![uml](./docs/paymybuddy-uml.png)
 
 ## Physical Data Model
-![pdm](./readme/paymybuddy-mpd.png)
+![pdm](./docs/paymybuddy-mpd.png)
 
 ## Creating the database
 In order to get started, you need to follow these steps :

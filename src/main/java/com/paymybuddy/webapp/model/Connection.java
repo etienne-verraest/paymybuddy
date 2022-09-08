@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @IdClass(ConnectionId.class)
-@Table
+@Table(name = "connection")
 public class Connection {
 
 	@Id

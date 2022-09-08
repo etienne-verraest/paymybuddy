@@ -32,6 +32,11 @@ You can custom the application by editing the `application.properties` file in t
 1. `server.port= [number]` : sets the local port of the web application
 2. `transactions.itemsPerPages = [number]` : sets the number of transactions per pages shown on the homepage
 
+## Starting the application
+In the root folder, open a command prompt (**cmd.exe**) and type the following command to start the application : `mvn spring-boot:run`
+If the database was properly setup, the application should start. <br>
+The url is [http://localhost:8080](http://localhost:8080)
+
 ## Demo of the application
 **Import the `datas.sql` file (in the main/resources folder) to import demonstration datas**
 There are 3 users, with pre-filled fields. The main account is the number 1, from there you will be able to see transactions, bank account and connections

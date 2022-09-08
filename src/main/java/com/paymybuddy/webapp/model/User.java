@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 
 @SuppressWarnings("serial")
 @Entity
-@Table
+@Table(name = "user")
 @Data
 @NoArgsConstructor
 public class User implements UserDetails {
